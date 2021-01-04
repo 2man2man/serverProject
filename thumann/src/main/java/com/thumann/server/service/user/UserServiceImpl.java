@@ -20,7 +20,6 @@ class UserServiceImpl implements UserService {
 
 	public UserServiceImpl()
 	{
-		// Changed Comment, 1
 	}
 
 	@Override
