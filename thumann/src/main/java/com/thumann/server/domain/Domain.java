@@ -7,7 +7,7 @@ import javax.persistence.MappedSuperclass;
 @MappedSuperclass
 public abstract class Domain {
 
-	private static final long UNKOWN_ID = 0;
+	public static final long UNKOWN_ID = 0;
 
 	@Id
 	@GeneratedValue

@@ -23,6 +23,13 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	@Autowired
 	private UserDetailsService userDetailsService;
 
+	@Override
+	@Bean
+	public AuthenticationManager authenticationManagerBean() throws Exception
+	{
+		return super.authenticationManagerBean();
+	}
+
 	@Bean
 	public static PasswordEncoder encoder()
 	{
@@ -39,7 +46,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception
 	{
-		http.authorizeRequests().anyRequest().authenticated().and().sessionManagement()
+		http.authorizeRequests()
+				.anyRequest()
+				.authenticated()
+				.and()
+				.sessionManagement()
 				.sessionCreationPolicy(SessionCreationPolicy.NEVER);
 		http.requiresChannel().anyRequest().requiresSecure();
 	}
@@ -51,10 +62,4 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 		web.ignoring().antMatchers("/rest/signUp/usernameAvailable");
 	}
 
-	@Override
-	@Bean
-	public AuthenticationManager authenticationManagerBean() throws Exception
-	{
-		return super.authenticationManagerBean();
-	}
 }
