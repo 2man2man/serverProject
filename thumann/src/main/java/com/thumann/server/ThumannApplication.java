@@ -44,7 +44,6 @@ public class ThumannApplication extends SpringBootServletInitializer {
 		@RequestMapping("/find/{city}/{country}")
 		public String find(@PathVariable String city, @PathVariable String country)
 		{
-
 			String result = cityService.getCity(city, country).toString() + "Test";
 			return result;
 		}
