@@ -33,6 +33,11 @@ public class ExtractUserIdRequestInterceptor extends HandlerInterceptorAdapter {
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception
 	{
+		String requestUrl = request.getRequestURL().toString();
+		if (requestUrl.endsWith("error")) {
+			return true;
+		}
+
 		String token = request.getHeader("Authorization");
 		if (!StringUtil.isEmpty(token)) {
 			token = token.replace("Bearer ", "");
