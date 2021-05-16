@@ -1,4 +1,4 @@
-package com.thumann.server.configuration.helper;
+package com.thumann.server.web.configuration;
 
 public class AuthorisationDetailsHolder {
 

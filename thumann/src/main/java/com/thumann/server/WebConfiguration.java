@@ -6,7 +6,7 @@ import org.springframework.web.servlet.config.annotation.ContentNegotiationConfi
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import com.thumann.server.configuration.interceptors.ExtractUserIdRequestInterceptor;
+import com.thumann.server.web.interceptor.ExtractUserIdRequestInterceptor;
 
 @Configuration
 public class WebConfiguration implements WebMvcConfigurer {

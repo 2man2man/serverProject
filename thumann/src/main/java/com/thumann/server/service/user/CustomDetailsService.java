@@ -9,7 +9,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import com.thumann.server.domain.user.User;
+import com.thumann.server.domain.user.UserCredentials;
 import com.thumann.server.helper.user.CustomUser;
 
 @Component("userDetailsService")
@@ -19,14 +19,14 @@ public class CustomDetailsService implements UserDetailsService {
 	private ApplicationContext appContext;
 
 	@Autowired
-	private UserService userService;
+	private UserCredentialsService userService;
 
 	@Override
 	public CustomUser loadUserByUsername(final String username) throws UsernameNotFoundException
 	{
-		User userEntity = userService.getByUserName(username);
+		UserCredentials userEntity = userService.getByUserName(username);
 		if (userEntity == null) {
-			throw new UsernameNotFoundException("User " + username + " was not found in the database");
+			throw new UsernameNotFoundException("UserCredentials " + username + " was not found in the database");
 		}
 
 		PasswordEncoder encoder = appContext.getBean(PasswordEncoder.class);

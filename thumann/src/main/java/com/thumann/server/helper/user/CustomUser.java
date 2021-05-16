@@ -8,7 +8,7 @@ public class CustomUser extends User {
 
 	private final long userId;
 
-	public CustomUser(com.thumann.server.domain.user.User user)
+	public CustomUser(com.thumann.server.domain.user.UserCredentials user)
 	{
 		super(user.getUsername(), user.getPassword(), user.getGrantedAuthoritiesList());
 		this.userId = user.getId();

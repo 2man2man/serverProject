@@ -25,8 +25,8 @@ import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 
-import com.thumann.server.configuration.helper.AuthorisationDetailsHolder;
 import com.thumann.server.helper.user.CustomUser;
+import com.thumann.server.web.configuration.AuthorisationDetailsHolder;
 
 @Configuration
 public class OAuth2Config extends AuthorizationServerConfigurerAdapter {

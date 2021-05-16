@@ -15,6 +15,9 @@ public abstract class Domain {
 
 	public Long getId()
 	{
+		if (id == null) {
+			return UNKOWN_ID;
+		}
 		return id;
 	}
 

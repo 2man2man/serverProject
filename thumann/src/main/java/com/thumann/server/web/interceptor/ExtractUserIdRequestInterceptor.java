@@ -1,4 +1,4 @@
-package com.thumann.server.configuration.interceptors;
+package com.thumann.server.web.interceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
