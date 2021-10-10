@@ -1,28 +1,22 @@
-package com.thumann.server.domain.article;
+package com.thumann.server.domain.tenant;
 
 import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.ManyToOne;
 
 import com.thumann.server.domain.Domain;
-import com.thumann.server.domain.tenant.Tenant;
 
 @Entity
-public class Article extends Domain implements Serializable {
+public class Tenant extends Domain implements Serializable {
 
 	private static final long serialVersionUID = 9098209729795499941L;
 
 	@Column(nullable = false)
 	private String name;
 
-	@Column(nullable = false)
+	@Column(nullable = false, unique = true)
 	private String number;
-
-	@ManyToOne(fetch = FetchType.LAZY, optional = false)
-	private Tenant tenant;
 
 	public String getName()
 	{
@@ -42,16 +36,6 @@ public class Article extends Domain implements Serializable {
 	public void setNumber(String number)
 	{
 		this.number = number;
-	}
-
-	public Tenant getTenant()
-	{
-		return tenant;
-	}
-
-	public void setTenant(Tenant tenant)
-	{
-		this.tenant = tenant;
 	}
 
 }

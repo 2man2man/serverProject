@@ -5,7 +5,7 @@ import java.util.Date;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.thumann.server.helper.json.JsonUtil;
 import com.thumann.server.helper.string.StringUtil;
-import com.thumann.server.web.exception.MissingFieldException;
+import com.thumann.server.web.exception.APIMissingFieldException;
 
 public class PupilCreateDTO {
 
@@ -25,13 +25,13 @@ public class PupilCreateDTO {
 	public void checkRequiredFields()
 	{
 		if (StringUtil.isEmpty(getFirstName())) {
-			throw MissingFieldException.create("firstName");
+			throw APIMissingFieldException.create("firstName");
 		}
 		else if (StringUtil.isEmpty(getLastName())) {
-			throw MissingFieldException.create("lastName");
+			throw APIMissingFieldException.create("lastName");
 		}
 		else if (getDateOfBirth() == null) {
-			throw MissingFieldException.create("dateOfBirth");
+			throw APIMissingFieldException.create("dateOfBirth");
 		}
 	}
 

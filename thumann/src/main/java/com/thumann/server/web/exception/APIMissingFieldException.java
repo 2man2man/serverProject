@@ -3,20 +3,20 @@ package com.thumann.server.web.exception;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
-public class MissingFieldException extends ResponseStatusException {
+public class APIMissingFieldException extends ResponseStatusException {
 
 	private static final long serialVersionUID = 7744327270117631068L;
 
 	private String missingField;
 
-	public static MissingFieldException create(String missingField)
+	public static APIMissingFieldException create(String missingField)
 	{
 		StringBuilder sb = new StringBuilder();
 		sb.append("The required field '").append(missingField).append("' is missing.");
-		return new MissingFieldException(sb.toString());
+		return new APIMissingFieldException(sb.toString());
 	}
 
-	private MissingFieldException(String missingField)
+	private APIMissingFieldException(String missingField)
 	{
 		super(HttpStatus.BAD_REQUEST, missingField);
 	}
