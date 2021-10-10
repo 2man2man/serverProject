@@ -4,10 +4,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.thumann.server.domain.tenant.Tenant;
-import com.thumann.server.web.response.APIResponseBuilderHelper;
 import com.thumann.server.web.response.CreateJsonInterface;
 
-public class TenantShortResponseDTO extends APIResponseBuilderHelper implements CreateJsonInterface
+public class TenantShortResponseDTO implements CreateJsonInterface
 {
     private long   id;
 
@@ -26,9 +25,9 @@ public class TenantShortResponseDTO extends APIResponseBuilderHelper implements 
     public JsonNode createJson()
     {
         ObjectNode objectNode = JsonNodeFactory.instance.objectNode();
-        addValue( objectNode, "id", getId() );
-        addValue( objectNode, "name", getName() );
-        addValue( objectNode, "number", getNumber() );
+        objectNode.put( "id", getId() );
+        objectNode.put( "name", getName() );
+        objectNode.put( "number", getNumber() );
         return objectNode;
     }
 

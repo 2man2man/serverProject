@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Scope;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.thumann.server.domain.tenant.Tenant;
+import com.thumann.server.service.base.ApplicationRunnable;
 import com.thumann.server.service.base.BaseService;
 import com.thumann.server.service.tenant.TenantService;
 
@@ -32,11 +33,29 @@ public class TenantControllerFactory
         return dto;
     }
 
-    public TenantResponseDTO createShortResponseDTO( Tenant tenant )
+    public TenantShortResponseDTO createShortResponseDTO( Tenant tenant )
     {
-        TenantResponseDTO dto = new TenantResponseDTO();
-        dto.initValues( tenant );
-        return dto;
+        try {
+            return (TenantShortResponseDTO) baseService.executeWithTransaction( new CreateShortTenantRunnable(), tenant.getId() );
+        }
+        catch ( Exception e ) {
+            throw new IllegalArgumentException( "Programming error: " + e.getMessage() );
+        }
+    }
+
+    private class CreateShortTenantRunnable implements ApplicationRunnable
+    {
+        @Override
+        public TenantShortResponseDTO run( Object tenantIdObj ) throws Exception
+        {
+            Long tenantId = (Long) tenantIdObj;
+            Tenant tenant = baseService.getMananger().find( Tenant.class, tenantId );
+
+            TenantShortResponseDTO dto = new TenantShortResponseDTO();
+            dto.initValues( tenant );
+            return dto;
+        }
+
     }
 
 }

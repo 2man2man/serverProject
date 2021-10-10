@@ -13,6 +13,11 @@ public class APIEntityNotFoundException extends ResponseStatusException
 
     private String            entityClass;
 
+    public static APIEntityNotFoundException create( Class<?> clazz, String fieldIdentifier, long fieldValue )
+    {
+        return create( clazz, fieldIdentifier, String.valueOf( fieldValue ) );
+    }
+
     public static APIEntityNotFoundException create( Class<?> clazz, String fieldIdentifier, String fieldValue )
     {
         String entityClass = clazz.getSimpleName();

@@ -54,6 +54,9 @@ public abstract class APIResponseBuilderHelper
         else if ( value instanceof JsonNode ) {
             node.set( key, (JsonNode) value );
         }
+        else if ( value instanceof CreateJsonInterface ) {
+            node.set( key, ( (CreateJsonInterface) value ).createJson() );
+        }
         else {
             throw new IllegalArgumentException( "Given datatype not supported: " + value.getClass().getSimpleName() );
         }
