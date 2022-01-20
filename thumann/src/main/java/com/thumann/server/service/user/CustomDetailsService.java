@@ -18,17 +18,16 @@ import com.thumann.server.helper.user.CustomUser;
 @Component( "userDetailsService" )
 public class CustomDetailsService implements UserDetailsService
 {
-
     @Autowired
     private ApplicationContext     appContext;
 
     @Autowired
-    private UserCredentialsService userService;
+    private UserCredentialsService userCredentialsService;
 
     @Override
     public CustomUser loadUserByUsername( final String username ) throws UsernameNotFoundException
     {
-        UserCredentials userEntity = userService.getByUserName( username );
+        UserCredentials userEntity = userCredentialsService.getByUserName( username );
         if ( userEntity == null ) {
             throw new UsernameNotFoundException( "UserCredentials " + username + " was not found in the database" );
         }

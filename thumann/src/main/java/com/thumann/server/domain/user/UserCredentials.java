@@ -15,54 +15,54 @@ import org.springframework.security.core.GrantedAuthority;
 import com.thumann.server.domain.Domain;
 
 @Entity
-@NamedQueries({ @NamedQuery(name = UserCredentials.GET_BY_USERNAME,
-		query = "SELECT user FROM UserCredentials user WHERE user.username = :username ") })
-public class UserCredentials extends Domain implements Serializable {
+@NamedQueries( { @NamedQuery( name = UserCredentials.GET_BY_USERNAME, query = "SELECT user FROM UserCredentials user WHERE user.username = :username " ) } )
+public class UserCredentials extends Domain implements Serializable
+{
 
-	private static final long serialVersionUID = 618293141162743083L;
+    private static final long            serialVersionUID       = 618293141162743083L;
 
-	public static final String GET_BY_USERNAME = "GET_BY_USERNAME";
+    public static final String           GET_BY_USERNAME        = "GET_BY_USERNAME";
 
-	@Column(unique = true, nullable = false)
-	public String username;
+    @Column( unique = true, nullable = false )
+    public String                        username;
 
-	@Column(nullable = false)
-	private String password;
+    @Column( nullable = false )
+    private String                       password;
 
-	@Transient
-	private Collection<GrantedAuthority> grantedAuthoritiesList = new ArrayList<>();
+    @Transient
+    private Collection<GrantedAuthority> grantedAuthoritiesList = new ArrayList<>();
 
-	public String getPassword()
-	{
-		return password;
-	}
+    public String getPassword()
+    {
+        return password;
+    }
 
-	public void setPassword(String password)
-	{
-		if (password.length() < 2) {
-			return;
-		}
+    public void setPassword( String password )
+    {
+        if ( password.length() < 2 ) {
+            return;
+        }
 
-		this.password = password;
-	}
+        this.password = password;
+    }
 
-	public Collection<GrantedAuthority> getGrantedAuthoritiesList()
-	{
-		return grantedAuthoritiesList;
-	}
+    public Collection<GrantedAuthority> getGrantedAuthoritiesList()
+    {
+        return grantedAuthoritiesList;
+    }
 
-	public void setGrantedAuthoritiesList(Collection<GrantedAuthority> grantedAuthoritiesList)
-	{
-		this.grantedAuthoritiesList = grantedAuthoritiesList;
-	}
+    public void setGrantedAuthoritiesList( Collection<GrantedAuthority> grantedAuthoritiesList )
+    {
+        this.grantedAuthoritiesList = grantedAuthoritiesList;
+    }
 
-	public String getUsername()
-	{
-		return username;
-	}
+    public String getUsername()
+    {
+        return username;
+    }
 
-	public void setUsername(String username)
-	{
-		this.username = username;
-	}
+    public void setUsername( String username )
+    {
+        this.username = username;
+    }
 }
