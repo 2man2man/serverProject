@@ -29,97 +29,96 @@ import com.thumann.server.helper.user.CustomUser;
 import com.thumann.server.web.configuration.AuthorisationDetailsHolder;
 
 @Configuration
-public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
+public class OAuth2Config extends AuthorizationServerConfigurerAdapter
+{
+    @Autowired
+    private ApplicationContext    appContext;
 
-	@Autowired
-	private ApplicationContext appContext;
+    private static final String   CLIENT_ID     = "GUESS_ME";
 
-	private String clientid = "tutorialspoint";
+    private static final String   CLIENT_SECRET = "ITS_A_SECRET";
 
-//	private String clientSecret = "my-secret-key"; // TODO: USE
+    @Autowired
+    @Qualifier( "authenticationManagerBean" )
+    private AuthenticationManager authenticationManager;
 
-	@Autowired
-	@Qualifier("authenticationManagerBean")
-	private AuthenticationManager authenticationManager;
+    @Bean
+    public JwtAccessTokenConverter tokenConverter()
+    {
+        JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
+        converter.setSigningKey( AuthorisationDetailsHolder.getPrivateKey() );
+        converter.setVerifierKey( AuthorisationDetailsHolder.getPublicKey() );
+        converter.setAccessTokenConverter( authExtractor() );
+        return converter;
+    }
 
-	@Bean
-	public JwtAccessTokenConverter tokenConverter()
-	{
-		JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
-		converter.setSigningKey(AuthorisationDetailsHolder.getPrivateKey());
-		converter.setVerifierKey(AuthorisationDetailsHolder.getPublicKey());
-		converter.setAccessTokenConverter(authExtractor());
-		return converter;
-	}
+    @Bean
+    public TokenStore tokenStore()
+    {
+        return new JwtTokenStore( tokenConverter() );
+    }
 
-	@Bean
-	public TokenStore tokenStore()
-	{
-		return new JwtTokenStore(tokenConverter());
-	}
+    private TokenEnhancer tokenEnhancer()
+    {
+        return ( accessToken, authentication ) -> {
+            if ( authentication != null && authentication.getPrincipal() instanceof CustomUser ) {
+                CustomUser authUser = (CustomUser) authentication.getPrincipal();
+                Map<String, Object> additionalInfo = new HashMap<>();
+                additionalInfo.put( "userId", authUser.getUserId() );
+                ( (DefaultOAuth2AccessToken) accessToken ).setAdditionalInformation( additionalInfo );
+            }
+            return accessToken;
+        };
+    }
 
-	private TokenEnhancer tokenEnhancer()
-	{
-		return (accessToken, authentication) -> {
-			if (authentication != null && authentication.getPrincipal() instanceof CustomUser) {
-				CustomUser authUser = (CustomUser) authentication.getPrincipal();
-				Map<String, Object> additionalInfo = new HashMap<>();
-				additionalInfo.put("userId", authUser.getUserId());
-				((DefaultOAuth2AccessToken) accessToken).setAdditionalInformation(additionalInfo);
-			}
-			return accessToken;
-		};
-	}
+    @Override
+    public void configure( AuthorizationServerEndpointsConfigurer endpoints ) throws Exception
+    {
+        TokenEnhancerChain chain = new TokenEnhancerChain();
+        List<TokenEnhancer> enhancerList = new ArrayList<TokenEnhancer>();
+        enhancerList.add( tokenEnhancer() );
+        enhancerList.add( tokenConverter() );
 
-	@Override
-	public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception
-	{
-		TokenEnhancerChain chain = new TokenEnhancerChain();
-		List<TokenEnhancer> enhancerList = new ArrayList<TokenEnhancer>();
-		enhancerList.add(tokenEnhancer());
-		enhancerList.add(tokenConverter());
+        chain.setTokenEnhancers( enhancerList );
 
-		chain.setTokenEnhancers(enhancerList);
+        endpoints.tokenStore( tokenStore() )
+                 .reuseRefreshTokens( false )
+                 .tokenEnhancer( chain )
+                 .authenticationManager( authenticationManager );
+    }
 
-		endpoints.tokenStore(tokenStore())
-				.reuseRefreshTokens(false)
-				.tokenEnhancer(chain)
-				.authenticationManager(authenticationManager);
-	}
+    @Override
+    public void configure( AuthorizationServerSecurityConfigurer security ) throws Exception
+    {
+        security.tokenKeyAccess( "permitAll()" ).checkTokenAccess( "isAuthenticated()" );
+    }
 
-	@Override
-	public void configure(AuthorizationServerSecurityConfigurer security) throws Exception
-	{
-		security.tokenKeyAccess("permitAll()").checkTokenAccess("isAuthenticated()");
-	}
+    @Override
+    public void configure( ClientDetailsServiceConfigurer clients ) throws Exception
+    {
+        PasswordEncoder encoder = appContext.getBean( PasswordEncoder.class );
 
-	@Override
-	public void configure(ClientDetailsServiceConfigurer clients) throws Exception
-	{
-		PasswordEncoder encoder = appContext.getBean(PasswordEncoder.class);
+        clients.inMemory()
+               .withClient( CLIENT_ID )
+               .secret( encoder.encode( CLIENT_SECRET ) )
+               .scopes( "read", "write" )
+               .authorizedGrantTypes( "password", "refresh_token" )
+               .accessTokenValiditySeconds( 600 )
+               .refreshTokenValiditySeconds( 7200 );
+    }
 
-		clients.inMemory()
-				.withClient(clientid)
-				.secret(encoder.encode("{noop}secret"))
-				.scopes("read", "write")
-				.authorizedGrantTypes("password", "refresh_token")
-				.accessTokenValiditySeconds(20000)
-				.refreshTokenValiditySeconds(20000);
-	}
-
-	@Bean
-	public DefaultAccessTokenConverter authExtractor()
-	{
-		return new DefaultAccessTokenConverter()
-		{
-			@Override
-			public OAuth2Authentication extractAuthentication(Map<String, ?> claims)
-			{
-				OAuth2Authentication authentication = super.extractAuthentication(claims);
-				authentication.setDetails(claims);
-				return authentication;
-			}
-		};
-	}
+    @Bean
+    public DefaultAccessTokenConverter authExtractor()
+    {
+        return new DefaultAccessTokenConverter() {
+            @Override
+            public OAuth2Authentication extractAuthentication( Map<String, ?> claims )
+            {
+                OAuth2Authentication authentication = super.extractAuthentication( claims );
+                authentication.setDetails( claims );
+                return authentication;
+            }
+        };
+    }
 
 }

@@ -1,22 +1,26 @@
 package com.thumann.server.helper.user;
 
+import java.util.Collection;
+
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 
-public class CustomUser extends User {
+public class CustomUser extends User
+{
 
-	private static final long serialVersionUID = -935375528857350551L;
+    private static final long serialVersionUID = -935375528857350551L;
 
-	private final long userId;
+    private final long        userId;
 
-	public CustomUser(com.thumann.server.domain.user.UserCredentials user)
-	{
-		super(user.getUsername(), user.getPassword(), user.getGrantedAuthoritiesList());
-		this.userId = user.getId();
-	}
+    public CustomUser( String userName, String password, Collection<GrantedAuthority> grantedAuthoritiesList, long userId )
+    {
+        super( userName, password, grantedAuthoritiesList );
+        this.userId = userId;
+    }
 
-	public long getUserId()
-	{
-		return userId;
-	}
+    public long getUserId()
+    {
+        return userId;
+    }
 
 }
