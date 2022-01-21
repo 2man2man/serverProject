@@ -32,6 +32,9 @@ public class Employee extends Person implements Serializable
     @OneToOne( fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true, optional = false )
     private UserCredentials   credentials;
 
+    @OneToOne( fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true, optional = false )
+    private UserPrivilege     privilege;
+
     @Override
     public String getName()
     {
@@ -83,6 +86,16 @@ public class Employee extends Person implements Serializable
     public void setCredentials( UserCredentials credentials )
     {
         this.credentials = credentials;
+    }
+
+    public UserPrivilege getPrivilege()
+    {
+        return privilege;
+    }
+
+    public void setPrivilege( UserPrivilege privilege )
+    {
+        this.privilege = privilege;
     }
 
 }

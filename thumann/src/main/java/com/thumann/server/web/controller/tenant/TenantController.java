@@ -28,7 +28,7 @@ public class TenantController
     private TenantControllerFactory factory;
 
     @PostMapping
-    public @ResponseBody ResponseEntity<?> createArticle( @RequestBody ObjectNode json )
+    public @ResponseBody ResponseEntity<?> createTenant( @RequestBody ObjectNode json )
     {
         TenantCreateDTO createDto = factory.createCreateDTO( json, tenantService );
 

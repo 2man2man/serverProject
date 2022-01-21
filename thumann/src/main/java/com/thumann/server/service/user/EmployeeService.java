@@ -9,4 +9,6 @@ public interface EmployeeService
 
     Employee getByUsername( String username );
 
+    void createAdmin();
+
 }

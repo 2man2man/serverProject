@@ -1,24 +1,32 @@
 package com.thumann.server.web.controller.employee;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.thumann.server.domain.tenant.Tenant;
 import com.thumann.server.domain.user.Employee;
 import com.thumann.server.helper.date.DateUtil;
+import com.thumann.server.helper.json.JsonUtil;
 import com.thumann.server.web.response.CreateJsonInterface;
 
 public class EmployeeResponseDTO implements CreateJsonInterface
 {
+    private long         id;
 
-    private long   id;
+    private String       firstName;
 
-    private String firstName;
+    private String       lastName;
 
-    private String lastName;
+    private String       userName;
 
-    private String userName;
+    private String       dateOfBirth;
 
-    private String dateOfBirth;
+    private boolean      systemConfigurationPrivilege = true;
+
+    private List<String> tenants                      = new ArrayList<>();
 
     public void initValues( Employee employee )
     {
@@ -27,6 +35,11 @@ public class EmployeeResponseDTO implements CreateJsonInterface
         setLastName( employee.getLastName() );
         setDateOfBirth( DateUtil.getDateString( employee.getDateOfBirth() ) );
         setUserName( employee.getCredentials().getUsername() );
+        setSystemConfigurationPrivilege( employee.getPrivilege().isSystemConfiguration() );
+
+        for ( Tenant tenant : employee.getTenants() ) {
+            tenants.add( tenant.getNumber() );
+        }
     }
 
     @Override
@@ -37,6 +50,10 @@ public class EmployeeResponseDTO implements CreateJsonInterface
         objectNode.put( "firstName", getFirstName() );
         objectNode.put( "lastName", getLastName() );
         objectNode.put( "dateOfBirth", getDateOfBirth() );
+        objectNode.put( "systemConfigurationPrivilege", isSystemConfigurationPrivilege() );
+
+        JsonUtil.putStringArray( objectNode, "tenants", tenants );
+
         return objectNode;
     }
 
@@ -88,6 +105,16 @@ public class EmployeeResponseDTO implements CreateJsonInterface
     public void setUserName( String userName )
     {
         this.userName = userName;
+    }
+
+    public boolean isSystemConfigurationPrivilege()
+    {
+        return systemConfigurationPrivilege;
+    }
+
+    public void setSystemConfigurationPrivilege( boolean systemConfigurationPrivilege )
+    {
+        this.systemConfigurationPrivilege = systemConfigurationPrivilege;
     }
 
 }

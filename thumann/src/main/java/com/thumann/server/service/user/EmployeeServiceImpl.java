@@ -11,8 +11,10 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.thumann.server.domain.tenant.Tenant;
 import com.thumann.server.domain.user.Employee;
 import com.thumann.server.domain.user.UserCredentials;
+import com.thumann.server.domain.user.UserPrivilege;
 import com.thumann.server.helper.string.StringUtil;
 import com.thumann.server.web.controller.employee.EmployeeCreateDTO;
 
@@ -34,13 +36,21 @@ class EmployeeServiceImpl implements EmployeeService
     @Override
     public Employee createEmployee( EmployeeCreateDTO createDTO )
     {
+        if ( createDTO.getTenants().isEmpty() ) {
+            throw new IllegalArgumentException( "tenants must not be empty" );
+        }
+
         Employee employee = new Employee();
         employee.setFirstName( createDTO.getFirstName() );
         employee.setLastName( createDTO.getLastName() );
         employee.setDateOfBirth( createDTO.getDateOfBirth() );
+        employee.getTenants().addAll( createDTO.getTenants() );
 
         UserCredentials credentials = userCredentialsService.create( createDTO.getUserName(), createDTO.getPassword() );
         employee.setCredentials( credentials );
+
+        employee.setPrivilege( new UserPrivilege() );
+        employee.getPrivilege().setSystemConfiguration( createDTO.isSystemConfigurationPrivilege() );
 
         return entityManager.merge( employee );
     }
@@ -68,6 +78,31 @@ class EmployeeServiceImpl implements EmployeeService
             throw new IllegalStateException( "username is supposed to be unique" );
         }
         return result.get( 0 );
+    }
+
+    @Override
+    public void createAdmin()
+    {
+        Employee user = getByUsername( "admin" );
+        if ( user != null ) {
+            return;
+        }
+
+        StringBuilder sb = new StringBuilder();
+        sb.append( "SELECT domain " )
+          .append( " FROM Tenant domain " );
+
+        List<Tenant> tenants = entityManager.createQuery( sb.toString(), Tenant.class ).getResultList();
+
+        EmployeeCreateDTO dto = new EmployeeCreateDTO();
+        dto.setUserName( "admin" );
+        dto.setPassword( "admin" );
+        dto.getTenants().addAll( tenants );
+        dto.setFirstName( "admin" );
+        dto.setLastName( "admin" );
+        dto.setSystemConfigurationPrivilege( true );
+
+        createEmployee( dto );
     }
 
 }

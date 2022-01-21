@@ -6,6 +6,8 @@ import java.util.Collection;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 
 import org.hibernate.annotations.NamedQueries;
@@ -28,6 +30,9 @@ public class UserCredentials extends Domain implements Serializable
 
     @Column( nullable = false )
     private String                       password;
+
+    @OneToOne( fetch = FetchType.LAZY, mappedBy = "credentials" )
+    private Employee                     employee;
 
     @Transient
     private Collection<GrantedAuthority> grantedAuthoritiesList = new ArrayList<>();
@@ -64,5 +69,15 @@ public class UserCredentials extends Domain implements Serializable
     public void setUsername( String username )
     {
         this.username = username;
+    }
+
+    public Employee getEmployee()
+    {
+        return employee;
+    }
+
+    public void setEmployee( Employee employee )
+    {
+        this.employee = employee;
     }
 }

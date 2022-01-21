@@ -7,7 +7,7 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import com.thumann.server.web.interceptor.ExtractUserIdRequestInterceptor;
+import com.thumann.server.web.interceptor.CheckUserRequestInterceptor;
 import com.thumann.server.web.interceptor.InclExcludedFieldsRequestInterceptor;
 
 @Configuration
@@ -35,7 +35,7 @@ public class WebConfiguration implements WebMvcConfigurer
     @Override
     public void addInterceptors( InterceptorRegistry registry )
     {
-        registry.addInterceptor( new ExtractUserIdRequestInterceptor() );
+        registry.addInterceptor( new CheckUserRequestInterceptor() );
         registry.addInterceptor( new InclExcludedFieldsRequestInterceptor() );
     }
 }

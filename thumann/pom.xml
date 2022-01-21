@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.applicationServerTest</groupId>
-	<artifactId>thumann</artifactId>
+	<artifactId>thumann</artifactId> 
 	<version>0.0.1-SNAPSHOT</version> 
 	<name>thumann</name>
 	<description>Testproject REST Json</description>

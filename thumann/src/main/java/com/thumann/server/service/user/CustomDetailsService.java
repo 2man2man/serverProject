@@ -38,7 +38,7 @@ public class CustomDetailsService implements UserDetailsService
         List<GrantedAuthority> grantedAuthoritiesList = new ArrayList<GrantedAuthority>();
         grantedAuthoritiesList.add( new SimpleGrantedAuthority( "ROLE_SYSTEMADMIN" ) );
 
-        CustomUser customUser = new CustomUser( userEntity.getUsername(), encodedPassword, grantedAuthoritiesList, userEntity.getId() );
+        CustomUser customUser = new CustomUser( userEntity.getUsername(), encodedPassword, grantedAuthoritiesList, userEntity.getEmployee().getId() );
         return customUser;
     }
 }

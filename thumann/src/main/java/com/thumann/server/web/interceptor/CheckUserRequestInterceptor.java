@@ -11,7 +11,7 @@ import com.nimbusds.jwt.JWTParser;
 import com.thumann.server.helper.string.StringUtil;
 import com.thumann.server.service.helper.UserThreadHelper;
 
-public class ExtractUserIdRequestInterceptor extends HandlerInterceptorAdapter
+public class CheckUserRequestInterceptor extends HandlerInterceptorAdapter
 {
 
     @Override
@@ -22,9 +22,6 @@ public class ExtractUserIdRequestInterceptor extends HandlerInterceptorAdapter
         throws Exception
     {
         UserThreadHelper.removeUser();
-//        response.addHeader( "access-control-allow-origin", "*" );
-//        response.addHeader( "access-control-allow-origin", "http://localhost:4200" );
-
     }
 
     @Override
@@ -51,6 +48,7 @@ public class ExtractUserIdRequestInterceptor extends HandlerInterceptorAdapter
             long userId = Long.valueOf( String.valueOf( jwt.getJWTClaimsSet().getClaim( "userId" ) ) );
             UserThreadHelper.addUser( userId );
         }
+
         return true;
     }
 }

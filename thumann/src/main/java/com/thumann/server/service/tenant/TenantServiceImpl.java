@@ -79,4 +79,22 @@ public class TenantServiceImpl implements TenantService
         }
     }
 
+    @Override
+    public void createMainTenant()
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.append( "SELECT domain.id " )
+          .append( " FROM Tenant domain " );
+
+        List<Long> tenants = entityManager.createQuery( sb.toString(), Long.class ).getResultList();
+        if ( !tenants.isEmpty() ) {
+            return;
+        }
+
+        TenantCreateDTO dto = new TenantCreateDTO();
+        dto.setNumber( "M1" );
+        dto.setName( "Main tenant" );
+        createTenant( dto );
+    }
+
 }
