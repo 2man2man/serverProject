@@ -49,6 +49,7 @@ public class EmployeeResponseDTO implements CreateJsonInterface
         objectNode.put( "id", getId() );
         objectNode.put( "firstName", getFirstName() );
         objectNode.put( "lastName", getLastName() );
+        objectNode.put( "userName", getUserName() );
         objectNode.put( "dateOfBirth", getDateOfBirth() );
         objectNode.put( "systemConfigurationPrivilege", isSystemConfigurationPrivilege() );
 

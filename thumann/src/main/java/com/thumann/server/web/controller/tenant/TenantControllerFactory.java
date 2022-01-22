@@ -26,8 +26,9 @@ public class TenantControllerFactory
         return dto;
     }
 
-    public TenantResponseDTO createResponseDTO( Tenant tenant )
+    public TenantResponseDTO createResponseDTO( long id )
     {
+        Tenant tenant = baseService.getById( id, Tenant.class );
         TenantResponseDTO dto = new TenantResponseDTO();
         dto.initValues( tenant );
         return dto;
@@ -55,7 +56,6 @@ public class TenantControllerFactory
             dto.initValues( tenant );
             return dto;
         }
-
     }
 
 }

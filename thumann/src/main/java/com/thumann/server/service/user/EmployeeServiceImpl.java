@@ -1,5 +1,6 @@
 package com.thumann.server.service.user;
 
+import java.util.HashSet;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -17,6 +18,7 @@ import com.thumann.server.domain.user.UserCredentials;
 import com.thumann.server.domain.user.UserPrivilege;
 import com.thumann.server.helper.string.StringUtil;
 import com.thumann.server.web.controller.employee.EmployeeCreateDTO;
+import com.thumann.server.web.controller.employee.EmployeeUpdateDTO;
 
 @Service( "employeeService" )
 @Scope( value = ConfigurableBeanFactory.SCOPE_SINGLETON )
@@ -50,7 +52,45 @@ class EmployeeServiceImpl implements EmployeeService
         employee.setCredentials( credentials );
 
         employee.setPrivilege( new UserPrivilege() );
-        employee.getPrivilege().setSystemConfiguration( createDTO.isSystemConfigurationPrivilege() );
+        Boolean systemConfigurationPrivilege = createDTO.isSystemConfigurationPrivilege();
+        if ( systemConfigurationPrivilege == null ) {
+            systemConfigurationPrivilege = true;
+        }
+        employee.getPrivilege().setSystemConfiguration( systemConfigurationPrivilege );
+
+        return entityManager.merge( employee );
+    }
+
+    @Override
+    public Employee updateEmployee( EmployeeUpdateDTO updateDto )
+    {
+        Employee employee = entityManager.find( Employee.class, updateDto.getEmployeeId() );
+
+        if ( !StringUtil.isEmpty( updateDto.getFirstName() ) ) {
+            employee.setFirstName( updateDto.getFirstName() );
+        }
+        if ( !StringUtil.isEmpty( updateDto.getLastName() ) ) {
+            employee.setLastName( updateDto.getLastName() );
+        }
+        if ( updateDto.getDateOfBirth() != null ) {
+            employee.setDateOfBirth( updateDto.getDateOfBirth() );
+        }
+        if ( !updateDto.getTenants().isEmpty() ) {
+            employee.setTenants( new HashSet<>( updateDto.getTenants() ) );
+        }
+        if ( !StringUtil.isEmpty( updateDto.getUserName() ) ) {
+            Employee existingEmployeeByUsername = getByUsername( updateDto.getUserName() );
+            if ( existingEmployeeByUsername != null && existingEmployeeByUsername.getId() != employee.getId() ) {
+                throw new IllegalStateException( "There already exists a user with username " + updateDto.getUserName() );
+            }
+            employee.getCredentials().setUsername( updateDto.getUserName() );
+        }
+        if ( !StringUtil.isEmpty( updateDto.getPassword() ) ) {
+            employee.getCredentials().setPassword( updateDto.getPassword() );
+        }
+        if ( updateDto.isSystemConfigurationPrivilege() != null ) {
+            employee.getPrivilege().setSystemConfiguration( updateDto.isSystemConfigurationPrivilege() );
+        }
 
         return entityManager.merge( employee );
     }

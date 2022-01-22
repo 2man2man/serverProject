@@ -28,6 +28,14 @@ public class EmployeeControllerFactory
         return dto;
     }
 
+    public EmployeeUpdateDTO createUpdateDTO( ObjectNode node, TenantService tenantService, Employee employee )
+    {
+        EmployeeUpdateDTO dto = new EmployeeUpdateDTO();
+        dto.initValues( node, tenantService, employee );
+        dto.checkRequiredFields();
+        return dto;
+    }
+
     public EmployeeResponseDTO createResponseDTO( long employeeId )
     {
         Employee employee = baseService.getById( employeeId, Employee.class, getEagerProps() );
