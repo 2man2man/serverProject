@@ -3,6 +3,7 @@ package com.thumann.server.web.controller.employee;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -71,34 +72,13 @@ public class EmployeeController
         return ResponseEntity.status( HttpStatus.OK ).body( result );
     }
 
-//  @GetMapping( value = "/getByUsername/{username}" )
-//  public @ResponseBody ResponseEntity<?> getByUsername( @PathVariable String username )
-//  {
-//      if ( StringUtil.isEmpty( username ) ) {
-//          throw APIBadRequestException.create( "username must be given" );
-//      }
-//      Employee employee = employeeService.getByUsername( username );
-//      if ( employee == null ) {
-//          throw APIEntityNotFoundException.create( Employee.class, "username", username );
-//      }
-//      EmployeeResponseDTO reponseDto = factory.createResponseDTO( employee );
-//      return ResponseEntity.status( HttpStatus.OK ).body( responseFactory.createResponse( reponseDto ) );
-//  }
-
-//
-//    @GetMapping( value = "/getByUsername/{username}" )
-//    public @ResponseBody ResponseEntity<?> getByUsername( @PathVariable String username )
-//    {
-//        if ( StringUtil.isEmpty( username ) ) {
-//            throw APIBadRequestException.create( "username must be given" );
-//        }
-//        Employee employee = employeeService.getByUsername( username );
-//        if ( employee == null ) {
-//            throw APIEntityNotFoundException.create( Employee.class, "username", username );
-//        }
-//        EmployeeResponseDTO reponseDto = factory.createResponseDTO( employee );
-//        return ResponseEntity.status( HttpStatus.OK ).body( responseFactory.createResponse( reponseDto ) );
-//    }
+    @GetMapping( value = "/getMyself" )
+    public @ResponseBody ResponseEntity<?> getMyself()
+    {
+        Employee myself = baseService.getById( UserThreadHelper.getUser(), Employee.class );
+        EmployeeResponseDTO reponseDto = factory.createResponseDTO( myself.getId() );
+        return ResponseEntity.status( HttpStatus.OK ).body( responseFactory.createResponse( reponseDto ) );
+    }
 
     private void checkPrivilege()
     {
