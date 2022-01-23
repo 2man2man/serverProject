@@ -18,22 +18,24 @@ import com.thumann.server.helper.string.StringUtil;
 @Entity
 public class Employee extends Person implements Serializable
 {
-    private static final long serialVersionUID = -4340150305661866300L;
+    private static final long  serialVersionUID = -4340150305661866300L;
+
+    public final static String ADMIN            = "admin";
 
     @Column( nullable = false )
-    private String            firstName;
+    private String             firstName;
 
     @Column( nullable = false )
-    private String            lastName;
+    private String             lastName;
 
     @Temporal( TemporalType.DATE )
-    private Date              dateOfBirth;
+    private Date               dateOfBirth;
 
     @OneToOne( fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true, optional = false )
-    private UserCredentials   credentials;
+    private UserCredentials    credentials;
 
     @OneToOne( fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true, optional = false )
-    private UserPrivilege     privilege;
+    private UserPrivilege      privilege;
 
     @Override
     public String getName()

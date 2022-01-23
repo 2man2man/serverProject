@@ -6,6 +6,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,8 @@ import com.thumann.server.domain.article.Article;
 import com.thumann.server.domain.tenant.Tenant;
 import com.thumann.server.dto.article.ArticleCreateDto;
 import com.thumann.server.helper.string.StringUtil;
+import com.thumann.server.service.base.BaseService;
+import com.thumann.server.service.helper.UserThreadHelper;
 
 @Service( "articleService" )
 @Scope( value = ConfigurableBeanFactory.SCOPE_SINGLETON )
@@ -24,6 +27,9 @@ public class ArticleServiceImpl implements ArticleService
 {
     @PersistenceContext
     private EntityManager entityManager;
+
+    @Autowired
+    private BaseService   baseService;
 
     public ArticleServiceImpl()
     {
@@ -43,6 +49,9 @@ public class ArticleServiceImpl implements ArticleService
         }
         else if ( createDTO.getTenant() == null ) {
             throw new IllegalArgumentException( "tenant must not be null" );
+        }
+        else if ( !baseService.getCallerTenantIds().contains( createDTO.getTenant().getId() ) ) {
+            throw new IllegalArgumentException( "Tenant with id :" + createDTO.getTenant().getId() + " not allowed for user with id: " + UserThreadHelper.getUser() );
         }
 
         Article existingArticle = find( createDTO.getNumber(), createDTO.getTenant() );

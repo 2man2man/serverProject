@@ -26,6 +26,8 @@ public class EmployeeResponseDTO implements CreateJsonInterface
 
     private boolean      systemConfigurationPrivilege = true;
 
+    private boolean      articleModifyPrivilege       = true;
+
     private List<String> tenants                      = new ArrayList<>();
 
     public void initValues( Employee employee )
@@ -36,6 +38,7 @@ public class EmployeeResponseDTO implements CreateJsonInterface
         setDateOfBirth( DateUtil.getDateString( employee.getDateOfBirth() ) );
         setUserName( employee.getCredentials().getUsername() );
         setSystemConfigurationPrivilege( employee.getPrivilege().isSystemConfiguration() );
+        setArticleModifyPrivilege( employee.getPrivilege().isArticleModify() );
 
         for ( Tenant tenant : employee.getTenants() ) {
             tenants.add( tenant.getNumber() );
@@ -52,6 +55,7 @@ public class EmployeeResponseDTO implements CreateJsonInterface
         objectNode.put( "userName", getUserName() );
         objectNode.put( "dateOfBirth", getDateOfBirth() );
         objectNode.put( "systemConfigurationPrivilege", isSystemConfigurationPrivilege() );
+        objectNode.put( "articleModifyPrivilege", isArticleModifyPrivilege() );
 
         JsonUtil.putStringArray( objectNode, "tenants", tenants );
 
@@ -116,6 +120,16 @@ public class EmployeeResponseDTO implements CreateJsonInterface
     public void setSystemConfigurationPrivilege( boolean systemConfigurationPrivilege )
     {
         this.systemConfigurationPrivilege = systemConfigurationPrivilege;
+    }
+
+    public boolean isArticleModifyPrivilege()
+    {
+        return articleModifyPrivilege;
+    }
+
+    public void setArticleModifyPrivilege( boolean articleModifyPrivilege )
+    {
+        this.articleModifyPrivilege = articleModifyPrivilege;
     }
 
 }

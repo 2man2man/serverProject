@@ -24,6 +24,8 @@ public class EmployeeCreateUpdateDTO
 
     private Boolean     systemConfigurationPrivilege;
 
+    private Boolean     articleModifyPrivilege;
+
     private Set<Tenant> tenants = new HashSet<>();
 
     public void initValues( ObjectNode json, TenantService tenantService )
@@ -34,10 +36,11 @@ public class EmployeeCreateUpdateDTO
         setPassword( JsonUtil.getString( json, "password" ) );
         setDateOfBirth( JsonUtil.getDate( json, "dateOfBirth" ) );
         setSystemConfigurationPrivilege( JsonUtil.getBoolean( json, "systemConfigurationPrivilege", null ) );
+        setSystemConfigurationPrivilege( JsonUtil.getBoolean( json, "articleModifyPrivilege", null ) );
 
         Set<String> tenantNumbers = new HashSet<String>( JsonUtil.getStringArray( json, "tenants" ) );
         for ( String tenantNumber : tenantNumbers ) {
-            Tenant tenant = tenantService.getByNumber( tenantNumber );
+            Tenant tenant = tenantService.getByNumber( tenantNumber, false );
             if ( tenant == null ) {
                 throw APIEntityNotFoundException.create( Tenant.class, "number", tenantNumber );
             }
@@ -108,6 +111,16 @@ public class EmployeeCreateUpdateDTO
     public void setSystemConfigurationPrivilege( Boolean systemConfigurationPrivilege )
     {
         this.systemConfigurationPrivilege = systemConfigurationPrivilege;
+    }
+
+    public Boolean getArticleModifyPrivilege()
+    {
+        return articleModifyPrivilege;
+    }
+
+    public void setArticleModifyPrivilege( Boolean articleModifyPrivilege )
+    {
+        this.articleModifyPrivilege = articleModifyPrivilege;
     }
 
 }

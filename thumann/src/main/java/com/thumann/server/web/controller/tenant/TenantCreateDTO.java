@@ -38,7 +38,7 @@ public class TenantCreateDTO
 
     private void checkNumberConflict( TenantService tenantService )
     {
-        Tenant byNumber = tenantService.getByNumber( getNumber() );
+        Tenant byNumber = tenantService.getByNumber( getNumber(), false );
         if ( byNumber != null ) {
             throw APINumberConflictException.create( Tenant.class, "number", getNumber() );
         }

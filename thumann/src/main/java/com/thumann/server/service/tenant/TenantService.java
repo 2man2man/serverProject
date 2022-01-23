@@ -8,8 +8,8 @@ public interface TenantService
 
     Tenant createTenant( TenantCreateDTO createDTO );
 
-    Tenant getByNumber( String number );
-
     void createMainTenant();
+
+    Tenant getByNumber( String number, boolean onlyCallerTenants );
 
 }

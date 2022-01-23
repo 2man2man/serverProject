@@ -26,4 +26,6 @@ public interface BaseService
 
     <T> List<T> getObjectsByQuery( String query, Class<T> resultClazz );
 
+    Set<Long> getCallerTenantIds();
+
 }

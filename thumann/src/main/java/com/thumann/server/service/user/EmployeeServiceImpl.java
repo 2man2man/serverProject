@@ -58,6 +58,13 @@ class EmployeeServiceImpl implements EmployeeService
         }
         employee.getPrivilege().setSystemConfiguration( systemConfigurationPrivilege );
 
+        
+        Boolean articleModifyPrivilege = createDTO.getArticleModifyPrivilege();
+        if ( articleModifyPrivilege == null ) {
+            articleModifyPrivilege = true;
+        }
+        employee.getPrivilege().setArticleModify( articleModifyPrivilege );
+
         return entityManager.merge( employee );
     }
 
@@ -90,6 +97,9 @@ class EmployeeServiceImpl implements EmployeeService
         }
         if ( updateDto.isSystemConfigurationPrivilege() != null ) {
             employee.getPrivilege().setSystemConfiguration( updateDto.isSystemConfigurationPrivilege() );
+        }
+        if ( updateDto.getArticleModifyPrivilege() != null ) {
+            employee.getPrivilege().setArticleModify( updateDto.getArticleModifyPrivilege() );
         }
 
         return entityManager.merge( employee );
@@ -135,11 +145,11 @@ class EmployeeServiceImpl implements EmployeeService
         List<Tenant> tenants = entityManager.createQuery( sb.toString(), Tenant.class ).getResultList();
 
         EmployeeCreateDTO dto = new EmployeeCreateDTO();
-        dto.setUserName( "admin" );
-        dto.setPassword( "admin" );
+        dto.setUserName( Employee.ADMIN );
+        dto.setPassword( Employee.ADMIN );
         dto.getTenants().addAll( tenants );
-        dto.setFirstName( "admin" );
-        dto.setLastName( "admin" );
+        dto.setFirstName( Employee.ADMIN );
+        dto.setLastName( Employee.ADMIN );
         dto.setSystemConfigurationPrivilege( true );
 
         createEmployee( dto );

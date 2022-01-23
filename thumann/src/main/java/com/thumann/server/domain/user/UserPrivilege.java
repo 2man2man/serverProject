@@ -20,6 +20,9 @@ public class UserPrivilege extends Domain implements Serializable
     @Column( columnDefinition = "BOOLEAN DEFAULT TRUE" )
     private boolean           systemConfiguration = true;
 
+    @Column( columnDefinition = "BOOLEAN DEFAULT TRUE" )
+    private boolean           articleModify       = true;
+
     public boolean isSystemConfiguration()
     {
         return systemConfiguration;
@@ -28,6 +31,16 @@ public class UserPrivilege extends Domain implements Serializable
     public void setSystemConfiguration( boolean systemConfiguration )
     {
         this.systemConfiguration = systemConfiguration;
+    }
+
+    public boolean isArticleModify()
+    {
+        return articleModify;
+    }
+
+    public void setArticleModify( boolean articleModify )
+    {
+        this.articleModify = articleModify;
     }
 
 }

@@ -19,13 +19,13 @@ public class EmployeeUpdateDTO extends EmployeeCreateUpdateDTO
     public void initValues( ObjectNode json, TenantService tenantService, Employee existingEmployee )
     {
         super.initValues( json, tenantService );
-        this.employeeId = existingEmployee.getId();
+        this.setEmployeeId( existingEmployee.getId() );
 
     }
 
     public void checkRequiredFields()
     {
-        if ( employeeId == Domain.UNKOWN_ID ) {
+        if ( getEmployeeId() == Domain.UNKOWN_ID ) {
             throw APIMissingFieldException.create( "employeeId" );
         }
     }
@@ -33,6 +33,11 @@ public class EmployeeUpdateDTO extends EmployeeCreateUpdateDTO
     public long getEmployeeId()
     {
         return employeeId;
+    }
+
+    public void setEmployeeId( long employeeId )
+    {
+        this.employeeId = employeeId;
     }
 
 }

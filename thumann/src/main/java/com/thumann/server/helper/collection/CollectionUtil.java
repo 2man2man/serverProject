@@ -2,8 +2,11 @@ package com.thumann.server.helper.collection;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+
+import com.thumann.server.domain.Domain;
 
 public class CollectionUtil
 {
@@ -28,4 +31,15 @@ public class CollectionUtil
 
         return list.subList( fromIndex, toIndex );
     }
+
+    public static List<Long> getIdsAsList( Iterable<? extends Domain> domains )
+    {
+        List<Long> result = new ArrayList<Long>();
+        for ( Iterator<? extends Domain> iterator = domains.iterator(); iterator.hasNext(); ) {
+            Domain obj = iterator.next();
+            result.add( obj.getId() );
+        }
+        return result;
+    }
+
 }

@@ -15,6 +15,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.thumann.server.domain.Domain;
+import com.thumann.server.domain.user.Employee;
+import com.thumann.server.domain.user.Person;
+import com.thumann.server.helper.collection.CollectionUtil;
+import com.thumann.server.service.helper.UserThreadHelper;
 
 @Service( "baseService" )
 @Scope( value = ConfigurableBeanFactory.SCOPE_SINGLETON )
@@ -96,6 +100,15 @@ public class BaseServiceImpl implements BaseService
     public <T> List<T> getObjectsByQuery( String query, Class<T> resultClazz )
     {
         return getMananger().createQuery( query, resultClazz ).getResultList();
+    }
+
+    @Override
+    public Set<Long> getCallerTenantIds()
+    {
+        Set<Long> result = new HashSet<>();
+        Person caller = getMananger().find( Employee.class, UserThreadHelper.getUser() );
+        result.addAll( CollectionUtil.getIdsAsList( caller.getTenants() ) );
+        return result;
     }
 
 }

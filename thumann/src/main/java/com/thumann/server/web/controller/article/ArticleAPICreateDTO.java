@@ -26,7 +26,7 @@ public class ArticleAPICreateDTO
         dto.setName( getName() );
         dto.setNumber( getNumber() );
 
-        Tenant tenant = tenantService.getByNumber( getTenantNumber() );
+        Tenant tenant = tenantService.getByNumber( getTenantNumber(), true );
         if ( tenant == null ) {
             throw APIEntityNotFoundException.create( Tenant.class, "number", getTenantNumber() );
         }
