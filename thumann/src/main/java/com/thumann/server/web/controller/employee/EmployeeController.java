@@ -65,7 +65,6 @@ public class EmployeeController
     @PutMapping( value = "/updateById/{id}" )
     public @ResponseBody ResponseEntity<?> updateById( @PathVariable long id, @RequestBody ObjectNode json )
     {
-        // Test
         checkPrivilege();
 
         Employee existingEmployee = baseService.getById( id, Employee.class );
