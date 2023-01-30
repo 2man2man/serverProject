@@ -1,6 +1,5 @@
 package com.thumann.server.web.controller.employee;
 
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -20,8 +19,6 @@ public class EmployeeCreateUpdateDTO
 
     private String      password;
 
-    private Date        dateOfBirth;
-
     private Boolean     systemConfigurationPrivilege;
 
     private Boolean     articleModifyPrivilege;
@@ -34,7 +31,6 @@ public class EmployeeCreateUpdateDTO
         setLastName( JsonUtil.getString( json, "lastName" ) );
         setUserName( JsonUtil.getString( json, "userName" ) );
         setPassword( JsonUtil.getString( json, "password" ) );
-        setDateOfBirth( JsonUtil.getDate( json, "dateOfBirth" ) );
         setSystemConfigurationPrivilege( JsonUtil.getBoolean( json, "systemConfigurationPrivilege", null ) );
         setSystemConfigurationPrivilege( JsonUtil.getBoolean( json, "articleModifyPrivilege", null ) );
 
@@ -66,16 +62,6 @@ public class EmployeeCreateUpdateDTO
     public void setLastName( String lastName )
     {
         this.lastName = lastName;
-    }
-
-    public Date getDateOfBirth()
-    {
-        return dateOfBirth;
-    }
-
-    public void setDateOfBirth( Date dateOfBirth )
-    {
-        this.dateOfBirth = dateOfBirth;
     }
 
     public String getUserName()

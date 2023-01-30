@@ -8,7 +8,6 @@ import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.thumann.server.domain.tenant.Tenant;
 import com.thumann.server.domain.user.Employee;
-import com.thumann.server.helper.date.DateUtil;
 import com.thumann.server.helper.json.JsonUtil;
 import com.thumann.server.web.response.CreateJsonInterface;
 
@@ -35,7 +34,6 @@ public class EmployeeResponseDTO implements CreateJsonInterface
         setId( employee.getId() );
         setFirstName( employee.getFirstName() );
         setLastName( employee.getLastName() );
-        setDateOfBirth( DateUtil.getDateString( employee.getDateOfBirth() ) );
         setUserName( employee.getCredentials().getUsername() );
         setSystemConfigurationPrivilege( employee.getPrivilege().isSystemConfiguration() );
         setArticleModifyPrivilege( employee.getPrivilege().isArticleModify() );

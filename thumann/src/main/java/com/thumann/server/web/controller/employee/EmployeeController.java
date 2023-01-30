@@ -27,6 +27,7 @@ import com.thumann.server.web.exception.APINumberConflictException;
 import com.thumann.server.web.helper.search.ApiSearchHelper;
 import com.thumann.server.web.response.ReponseFactory;
 
+//TODO: check adding of tenants -> Only tenants can be added which the caller itself has
 @RestController
 @RequestMapping( value = "/employee", consumes = "application/json", produces = "application/json" )
 public class EmployeeController
@@ -104,6 +105,19 @@ public class EmployeeController
     {
         Employee myself = baseService.getById( UserThreadHelper.getUser(), Employee.class );
         EmployeeResponseDTO reponseDto = factory.createResponseDTO( myself.getId() );
+        return ResponseEntity.status( HttpStatus.OK ).body( responseFactory.createResponse( reponseDto ) );
+    }
+
+    @GetMapping( value = "/getById//{id}" )
+    public @ResponseBody ResponseEntity<?> getById( @PathVariable long id )
+    {
+        Employee employee = baseService.getById( id, Employee.class );
+
+        if ( employee == null ) {
+            throw APIEntityNotFoundException.create( Employee.class, "id", id );
+        }
+
+        EmployeeResponseDTO reponseDto = factory.createResponseDTO( employee.getId() );
         return ResponseEntity.status( HttpStatus.OK ).body( responseFactory.createResponse( reponseDto ) );
     }
 

@@ -3,6 +3,8 @@ package com.thumann.server.web.controller.tenant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +19,7 @@ import com.thumann.server.helper.collection.CollectionUtil;
 import com.thumann.server.service.base.BaseService;
 import com.thumann.server.service.helper.UserThreadHelper;
 import com.thumann.server.service.tenant.TenantService;
+import com.thumann.server.web.exception.APIEntityNotFoundException;
 import com.thumann.server.web.exception.APIMissingAuthorizationException;
 import com.thumann.server.web.helper.search.ApiSearchHelper;
 import com.thumann.server.web.response.ReponseFactory;
@@ -48,11 +51,23 @@ public class TenantController
         return ResponseEntity.status( HttpStatus.CREATED ).body( responseFactory.createResponse( reponseDto ) );
     }
 
+    @GetMapping( value = "/getByNumber//{number}" )
+    public @ResponseBody ResponseEntity<?> getById( @PathVariable String number )
+    {
+        Tenant domain = tenantService.getByNumber( number, true );
+
+        if ( domain == null ) {
+            throw APIEntityNotFoundException.create( Tenant.class, "number", number );
+        }
+
+        TenantResponseDTO reponseDto = factory.createResponseDTO( domain.getId() );
+        return ResponseEntity.status( HttpStatus.OK ).body( responseFactory.createResponse( reponseDto ) );
+    }
+
+    // TODO: return only tenants of the user
     @PostMapping( value = "/search" )
     public @ResponseBody ResponseEntity<?> search( @RequestBody ObjectNode json )
     {
-        checkPrivilege();
-
         TenantSearchParams searchParams = new TenantSearchParams( factory );
         searchParams.initParams( json );
 

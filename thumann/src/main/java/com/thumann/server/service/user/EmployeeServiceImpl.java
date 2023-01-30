@@ -45,7 +45,6 @@ class EmployeeServiceImpl implements EmployeeService
         Employee employee = new Employee();
         employee.setFirstName( createDTO.getFirstName() );
         employee.setLastName( createDTO.getLastName() );
-        employee.setDateOfBirth( createDTO.getDateOfBirth() );
         employee.getTenants().addAll( createDTO.getTenants() );
 
         UserCredentials credentials = userCredentialsService.create( createDTO.getUserName(), createDTO.getPassword() );
@@ -58,7 +57,6 @@ class EmployeeServiceImpl implements EmployeeService
         }
         employee.getPrivilege().setSystemConfiguration( systemConfigurationPrivilege );
 
-        
         Boolean articleModifyPrivilege = createDTO.getArticleModifyPrivilege();
         if ( articleModifyPrivilege == null ) {
             articleModifyPrivilege = true;
@@ -78,9 +76,6 @@ class EmployeeServiceImpl implements EmployeeService
         }
         if ( !StringUtil.isEmpty( updateDto.getLastName() ) ) {
             employee.setLastName( updateDto.getLastName() );
-        }
-        if ( updateDto.getDateOfBirth() != null ) {
-            employee.setDateOfBirth( updateDto.getDateOfBirth() );
         }
         if ( !updateDto.getTenants().isEmpty() ) {
             employee.setTenants( new HashSet<>( updateDto.getTenants() ) );
