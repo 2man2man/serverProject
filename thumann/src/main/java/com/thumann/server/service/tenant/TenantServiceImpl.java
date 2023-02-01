@@ -19,7 +19,8 @@ import com.thumann.server.service.base.BaseService;
 import com.thumann.server.service.helper.UserThreadHelper;
 import com.thumann.server.service.user.EmployeeService;
 import com.thumann.server.web.controller.employee.EmployeeUpdateDTO;
-import com.thumann.server.web.controller.tenant.TenantCreateDTO;
+import com.thumann.server.web.controller.tenant.TenantCreateDto;
+import com.thumann.server.web.controller.tenant.TenantUpdateDto;
 
 @Service( "tenantService" )
 @Scope( value = ConfigurableBeanFactory.SCOPE_SINGLETON )
@@ -40,7 +41,7 @@ public class TenantServiceImpl implements TenantService
     }
 
     @Override
-    public Tenant createTenant( TenantCreateDTO createDTO )
+    public Tenant createTenant( TenantCreateDto createDTO )
     {
         if ( createDTO == null ) {
             throw new IllegalArgumentException( "createDTO must not be null" );
@@ -64,24 +65,56 @@ public class TenantServiceImpl implements TenantService
         tenant = entityManager.merge( tenant );
 
         Employee adminUser = employeeService.getByUsername( Employee.ADMIN );
-        EmployeeUpdateDTO updateDto = new EmployeeUpdateDTO();
-        updateDto.setEmployeeId( adminUser.getId() );
-        updateDto.getTenants().addAll( adminUser.getTenants() );
-        updateDto.getTenants().add( tenant );
-        employeeService.updateEmployee( updateDto );
+        addEmployee( tenant, adminUser );
 
         long callerId = UserThreadHelper.getUser();
         if ( callerId != adminUser.getId() ) {
             Employee caller = entityManager.find( Employee.class, callerId );
-
-            updateDto = new EmployeeUpdateDTO();
-            updateDto.setEmployeeId( caller.getId() );
-            updateDto.getTenants().addAll( caller.getTenants() );
-            updateDto.getTenants().add( tenant );
-            employeeService.updateEmployee( updateDto );
+            addEmployee( tenant, caller );
         }
 
         return tenant;
+    }
+
+    private void addEmployee( Tenant tenant, Employee employee )
+    {
+        EmployeeUpdateDTO updateDto = new EmployeeUpdateDTO();
+        updateDto.setTenantCreation( true );
+        updateDto.setEmployeeId( employee.getId() );
+
+        updateDto.getTenants().addAll( employee.getTenants() );
+        updateDto.getTenants().add( tenant );
+        employeeService.updateEmployee( updateDto );
+    }
+
+    @Override
+    public Tenant updateTenant( TenantUpdateDto dto )
+    {
+        if ( dto == null ) {
+            throw new IllegalArgumentException( "dto must not be null" );
+        }
+
+        Tenant tenantToUpdate = entityManager.find( Tenant.class, dto.getTenantId() );
+        if ( tenantToUpdate == null ) {
+            throw new IllegalArgumentException( "No tenant for id [" + dto.getTenantId() + "] was found" );
+        }
+
+        final String number = dto.getNumber();
+        if ( !StringUtil.isEmpty( number ) ) {
+            Tenant exitingTenant = getByNumber( number, false );
+            if ( exitingTenant != null && exitingTenant.getId() != tenantToUpdate.getId() ) {
+                throw new IllegalArgumentException( "There already exists a tenant with number [" + number + "]" );
+            }
+            tenantToUpdate.setNumber( number );
+        }
+
+        final String name = dto.getName();
+        if ( !StringUtil.isEmpty( name ) ) {
+            tenantToUpdate.setName( name );
+        }
+
+        return entityManager.merge( tenantToUpdate );
+
     }
 
     @Override

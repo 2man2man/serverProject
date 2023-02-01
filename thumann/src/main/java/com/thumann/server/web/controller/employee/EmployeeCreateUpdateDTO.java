@@ -32,7 +32,7 @@ public class EmployeeCreateUpdateDTO
         setUserName( JsonUtil.getString( json, "userName" ) );
         setPassword( JsonUtil.getString( json, "password" ) );
         setSystemConfigurationPrivilege( JsonUtil.getBoolean( json, "systemConfigurationPrivilege", null ) );
-        setSystemConfigurationPrivilege( JsonUtil.getBoolean( json, "articleModifyPrivilege", null ) );
+        setArticleModifyPrivilege( JsonUtil.getBoolean( json, "articleModifyPrivilege", null ) );
 
         Set<String> tenantNumbers = new HashSet<String>( JsonUtil.getStringArray( json, "tenants" ) );
         for ( String tenantNumber : tenantNumbers ) {

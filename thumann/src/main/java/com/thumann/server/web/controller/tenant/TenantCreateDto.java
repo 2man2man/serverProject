@@ -1,25 +1,13 @@
 package com.thumann.server.web.controller.tenant;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.thumann.server.domain.tenant.Tenant;
-import com.thumann.server.helper.json.JsonUtil;
 import com.thumann.server.helper.string.StringUtil;
 import com.thumann.server.service.tenant.TenantService;
 import com.thumann.server.web.exception.APIMissingFieldException;
 import com.thumann.server.web.exception.APINumberConflictException;
 
-public class TenantCreateDTO
+public class TenantCreateDto extends TenantCreateUpdateDTO
 {
-    private String name;
-
-    private String number;
-
-    public void initValues( ObjectNode json )
-    {
-        setName( JsonUtil.getString( json, "name" ) );
-        setNumber( JsonUtil.getString( json, "number" ) );
-    }
-
     public void check( TenantService tenantService )
     {
         checkRequiredFields();
@@ -43,25 +31,4 @@ public class TenantCreateDTO
             throw APINumberConflictException.create( Tenant.class, "number", getNumber() );
         }
     }
-
-    public String getName()
-    {
-        return name;
-    }
-
-    public void setName( String name )
-    {
-        this.name = name;
-    }
-
-    public String getNumber()
-    {
-        return number;
-    }
-
-    public void setNumber( String number )
-    {
-        this.number = number;
-    }
-
 }

@@ -21,8 +21,10 @@ import com.thumann.server.service.base.BaseService;
 import com.thumann.server.service.helper.UserThreadHelper;
 import com.thumann.server.service.tenant.TenantService;
 import com.thumann.server.service.user.EmployeeService;
+import com.thumann.server.web.exception.APIBadRequestException;
 import com.thumann.server.web.exception.APIEntityNotFoundException;
 import com.thumann.server.web.exception.APIMissingAuthorizationException;
+import com.thumann.server.web.exception.APIMissingFieldException;
 import com.thumann.server.web.exception.APINumberConflictException;
 import com.thumann.server.web.helper.search.ApiSearchHelper;
 import com.thumann.server.web.response.ReponseFactory;
@@ -57,6 +59,7 @@ public class EmployeeController
         if ( existingEmployee != null ) {
             throw APINumberConflictException.create( Employee.class, "username", createDto.getUserName() );
         }
+        checkTenants( createDto );
 
         Employee employee = employeeService.createEmployee( createDto );
         EmployeeResponseDTO reponseDto = factory.createResponseDTO( employee.getId() );
@@ -72,6 +75,9 @@ public class EmployeeController
         if ( existingEmployee == null ) {
             throw APIEntityNotFoundException.create( Employee.class, "id", id );
         }
+        else if ( employeeService.isAdmin( existingEmployee.getId() ) && existingEmployee.getId() != UserThreadHelper.getUser() ) {
+            throw APIMissingAuthorizationException.create( "Admin can't be updated" );
+        }
 
         EmployeeUpdateDTO updateDto = factory.createUpdateDTO( json, tenantService, existingEmployee );
         if ( !StringUtil.isEmpty( updateDto.getUserName() ) ) {
@@ -80,10 +86,20 @@ public class EmployeeController
                 throw APINumberConflictException.create( Employee.class, "username", updateDto.getUserName() );
             }
         }
+        checkTenants( updateDto );
 
         Employee employee = employeeService.updateEmployee( updateDto );
         EmployeeResponseDTO reponseDto = factory.createResponseDTO( employee.getId() );
         return ResponseEntity.status( HttpStatus.OK ).body( responseFactory.createResponse( reponseDto ) );
+    }
+
+    private void checkTenants( EmployeeCreateUpdateDTO dto )
+    {
+        String error = employeeService.checkTenants( dto );
+        if ( StringUtil.isEmpty( error ) ) {
+            return;
+        }
+        throw APIBadRequestException.create( error );
     }
 
     @PostMapping( value = "/search" )
@@ -115,6 +131,21 @@ public class EmployeeController
 
         if ( employee == null ) {
             throw APIEntityNotFoundException.create( Employee.class, "id", id );
+        }
+
+        EmployeeResponseDTO reponseDto = factory.createResponseDTO( employee.getId() );
+        return ResponseEntity.status( HttpStatus.OK ).body( responseFactory.createResponse( reponseDto ) );
+    }
+
+    @GetMapping( value = "/getByUserName//{username}" )
+    public @ResponseBody ResponseEntity<?> getByUserName( @PathVariable String username )
+    {
+        if ( StringUtil.isEmpty( username ) ) {
+            throw APIMissingFieldException.create( "username" );
+        }
+        Employee employee = employeeService.getByUsername( username );
+        if ( employee == null ) {
+            throw APIEntityNotFoundException.create( Employee.class, "username", username );
         }
 
         EmployeeResponseDTO reponseDto = factory.createResponseDTO( employee.getId() );

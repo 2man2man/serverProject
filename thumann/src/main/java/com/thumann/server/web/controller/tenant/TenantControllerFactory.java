@@ -18,10 +18,18 @@ public class TenantControllerFactory
     @Autowired
     private BaseService baseService;
 
-    public TenantCreateDTO createCreateDTO( ObjectNode node, TenantService tenantService )
+    public TenantCreateDto createCreateDTO( ObjectNode node, TenantService tenantService )
     {
-        TenantCreateDTO dto = new TenantCreateDTO();
+        TenantCreateDto dto = new TenantCreateDto();
         dto.initValues( node );
+        dto.check( tenantService );
+        return dto;
+    }
+
+    public TenantUpdateDto createUpdateDTO( Tenant tenantToUpdate, ObjectNode node, TenantService tenantService )
+    {
+        TenantUpdateDto dto = new TenantUpdateDto();
+        dto.initValues( node, tenantToUpdate );
         dto.check( tenantService );
         return dto;
     }

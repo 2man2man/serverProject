@@ -12,7 +12,6 @@ import javax.persistence.OneToOne;
 
 import com.thumann.server.helper.string.StringUtil;
 
-//TODO: add boolean which allows all tenants for this employee
 @Entity
 public class Employee extends Person implements Serializable
 {

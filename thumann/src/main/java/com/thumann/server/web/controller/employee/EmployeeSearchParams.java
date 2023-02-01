@@ -2,8 +2,10 @@ package com.thumann.server.web.controller.employee;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.thumann.server.helper.string.StringUtil;
 import com.thumann.server.service.base.BaseService;
 import com.thumann.server.web.helper.search.ApiSearchParamDto;
 
@@ -19,10 +21,16 @@ public class EmployeeSearchParams extends ApiSearchParamDto
     @Override
     public String buildQuery( BaseService baseService )
     {
-        StringBuilder sb = new StringBuilder();
+        Set<Long> callerTenantIds = baseService.getCallerTenantIds();
 
+        StringBuilder sb = new StringBuilder();
         sb.append( " SELECT domain.id " )
-          .append( " FROM Employee domain " )
+          .append( "   FROM Employee domain " )
+          .append( "  WHERE domain.id IN ( SELECT domain2.id " )
+          .append( "                        FROM Employee domain2 " )
+          .append( "                        JOIN domain2.tenants tenant " )
+          .append( "                       WHERE tenant.id IN (" ).append( StringUtil.combineWithSeparator( callerTenantIds, "," ) ).append( ") " )
+          .append( "                      )" )
           .append( " ORDER BY domain.id asc " );
 
         return sb.toString();

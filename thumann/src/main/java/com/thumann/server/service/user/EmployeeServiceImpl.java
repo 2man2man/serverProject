@@ -2,6 +2,7 @@ package com.thumann.server.service.user;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -16,8 +17,11 @@ import com.thumann.server.domain.tenant.Tenant;
 import com.thumann.server.domain.user.Employee;
 import com.thumann.server.domain.user.UserCredentials;
 import com.thumann.server.domain.user.UserPrivilege;
+import com.thumann.server.helper.collection.CollectionUtil;
 import com.thumann.server.helper.string.StringUtil;
+import com.thumann.server.service.helper.UserThreadHelper;
 import com.thumann.server.web.controller.employee.EmployeeCreateDTO;
+import com.thumann.server.web.controller.employee.EmployeeCreateUpdateDTO;
 import com.thumann.server.web.controller.employee.EmployeeUpdateDTO;
 
 @Service( "employeeService" )
@@ -40,6 +44,10 @@ class EmployeeServiceImpl implements EmployeeService
     {
         if ( createDTO.getTenants().isEmpty() ) {
             throw new IllegalArgumentException( "tenants must not be empty" );
+        }
+        String tenantError = checkTenants( createDTO );
+        if ( !StringUtil.isEmpty( tenantError ) ) {
+            throw new IllegalArgumentException( tenantError );
         }
 
         Employee employee = new Employee();
@@ -70,6 +78,11 @@ class EmployeeServiceImpl implements EmployeeService
     public Employee updateEmployee( EmployeeUpdateDTO updateDto )
     {
         Employee employee = entityManager.find( Employee.class, updateDto.getEmployeeId() );
+
+        String tenantError = checkTenants( updateDto );
+        if ( !StringUtil.isEmpty( tenantError ) ) {
+            throw new IllegalArgumentException( tenantError );
+        }
 
         if ( !StringUtil.isEmpty( updateDto.getFirstName() ) ) {
             employee.setFirstName( updateDto.getFirstName() );
@@ -128,7 +141,7 @@ class EmployeeServiceImpl implements EmployeeService
     @Override
     public void createAdmin()
     {
-        Employee user = getByUsername( "admin" );
+        Employee user = getByUsername( Employee.ADMIN );
         if ( user != null ) {
             return;
         }
@@ -148,6 +161,34 @@ class EmployeeServiceImpl implements EmployeeService
         dto.setSystemConfigurationPrivilege( true );
 
         createEmployee( dto );
+    }
+
+    @Override
+    public String checkTenants( EmployeeCreateUpdateDTO dto )
+    {
+        if ( dto instanceof EmployeeUpdateDTO ) {
+            EmployeeUpdateDTO updateDto = (EmployeeUpdateDTO) dto;
+            if ( updateDto.isTenantCreation() ) {
+                return null;
+            }
+        }
+
+        Employee caller = entityManager.find( Employee.class, UserThreadHelper.getUser() );
+        Set<Long> callerTenantids = CollectionUtil.getIdsAsSet( caller.getTenants() );
+
+        for ( Tenant tenant : dto.getTenants() ) {
+            if ( !callerTenantids.contains( tenant.getId() ) ) {
+                return "Person [" + caller.getId() + "] can't add tenant [" + tenant.getNumber() + " ] since the person is not linked to the tenant!";
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public boolean isAdmin( long employeeId )
+    {
+        Employee employee = entityManager.find( Employee.class, employeeId );
+        return Employee.ADMIN.equals( employee.getCredentials().getUsername() );
     }
 
 }

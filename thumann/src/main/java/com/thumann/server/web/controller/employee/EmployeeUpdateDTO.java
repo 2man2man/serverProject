@@ -8,7 +8,9 @@ import com.thumann.server.web.exception.APIMissingFieldException;
 
 public class EmployeeUpdateDTO extends EmployeeCreateUpdateDTO
 {
-    private long employeeId = Domain.UNKOWN_ID;
+    private long    employeeId       = Domain.UNKOWN_ID;
+
+    private boolean isTenantCreation = false;
 
     @Override
     public void initValues( ObjectNode json, TenantService tenantService )
@@ -38,6 +40,16 @@ public class EmployeeUpdateDTO extends EmployeeCreateUpdateDTO
     public void setEmployeeId( long employeeId )
     {
         this.employeeId = employeeId;
+    }
+
+    public boolean isTenantCreation()
+    {
+        return isTenantCreation;
+    }
+
+    public void setTenantCreation( boolean isTenantCreation )
+    {
+        this.isTenantCreation = isTenantCreation;
     }
 
 }

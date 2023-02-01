@@ -42,4 +42,14 @@ public class CollectionUtil
         return result;
     }
 
+    public static Set<Long> getIdsAsSet( Iterable<? extends Domain> domains )
+    {
+        Set<Long> result = new HashSet<>();
+        for ( Iterator<? extends Domain> iterator = domains.iterator(); iterator.hasNext(); ) {
+            Domain obj = iterator.next();
+            result.add( obj.getId() );
+        }
+        return result;
+    }
+
 }
