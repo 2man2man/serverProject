@@ -12,16 +12,16 @@ import com.thumann.server.domain.Domain;
 @Entity
 public class UserPrivilege extends Domain implements Serializable
 {
-    private static final long serialVersionUID    = 1456182454791795173L;
+    private static final long serialVersionUID      = 1456182454791795173L;
 
     @OneToOne( fetch = FetchType.LAZY, mappedBy = "credentials" )
     private Employee          employee;
 
-    @Column( columnDefinition = "BOOLEAN DEFAULT TRUE" )
-    private boolean           systemConfiguration = true;
+    @Column( columnDefinition = "BOOLEAN DEFAULT FALSE" )
+    private boolean           systemConfiguration   = false;
 
-    @Column( columnDefinition = "BOOLEAN DEFAULT TRUE" )
-    private boolean           articleModify       = true;
+    @Column( columnDefinition = "BOOLEAN DEFAULT FALSE" )
+    private boolean           logisticConfiguration = false;
 
     public boolean isSystemConfiguration()
     {
@@ -33,14 +33,14 @@ public class UserPrivilege extends Domain implements Serializable
         this.systemConfiguration = systemConfiguration;
     }
 
-    public boolean isArticleModify()
+    public boolean isLogisticConfiguration()
     {
-        return articleModify;
+        return logisticConfiguration;
     }
 
-    public void setArticleModify( boolean articleModify )
+    public void setLogisticConfiguration( boolean logisticConfiguration )
     {
-        this.articleModify = articleModify;
+        this.logisticConfiguration = logisticConfiguration;
     }
 
 }

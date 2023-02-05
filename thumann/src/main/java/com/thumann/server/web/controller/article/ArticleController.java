@@ -13,15 +13,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.thumann.server.domain.article.Article;
-import com.thumann.server.domain.user.Employee;
-import com.thumann.server.helper.collection.CollectionUtil;
 import com.thumann.server.service.article.ArticleService;
 import com.thumann.server.service.base.BaseService;
-import com.thumann.server.service.helper.UserThreadHelper;
 import com.thumann.server.service.tenant.TenantService;
 import com.thumann.server.web.exception.APIBadRequestException;
 import com.thumann.server.web.exception.APIEntityNotFoundException;
-import com.thumann.server.web.exception.APIMissingAuthorizationException;
 import com.thumann.server.web.response.ReponseFactory;
 
 @RestController
@@ -46,8 +42,6 @@ public class ArticleController
     @PostMapping
     public @ResponseBody ResponseEntity<?> createArticle( @RequestBody ObjectNode json )
     {
-        checkPrivilege();
-
         ArticleAPICreateDTO createDto = factory.createCreateDTO( json );
 
         Article article = articleService.createArticle( createDto.toCreateDto( tenantService, articleService ) );
@@ -68,14 +62,6 @@ public class ArticleController
         }
         ArticleResponseDTO reponseDto = factory.createResponseDTO( article );
         return ResponseEntity.status( HttpStatus.OK ).body( responseFactory.createResponse( reponseDto ) );
-    }
-
-    private void checkPrivilege()
-    {
-        Employee caller = baseService.getById( UserThreadHelper.getUser(), Employee.class, CollectionUtil.setOf( "privilege" ) );
-        if ( !caller.getPrivilege().isArticleModify() ) {
-            throw APIMissingAuthorizationException.create( "articleModify" );
-        }
     }
 
 }

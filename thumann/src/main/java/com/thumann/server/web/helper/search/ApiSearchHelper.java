@@ -22,8 +22,8 @@ public class ApiSearchHelper
     {
         List<Long> ids = getIds( seachparam );
 
-        int fromIndex = seachparam.getPage() * seachparam.getLimit();
-        int toIndex = ( seachparam.getPage() + 1 ) * seachparam.getLimit();
+        long fromIndex = seachparam.getPage() * seachparam.getLimit();
+        long toIndex = ( seachparam.getPage() + 1 ) * seachparam.getLimit();
         List<Long> subList = CollectionUtil.safeSubList( ids, fromIndex, toIndex );
 
         List<JsonNode> jsons = seachparam.createJson( subList );

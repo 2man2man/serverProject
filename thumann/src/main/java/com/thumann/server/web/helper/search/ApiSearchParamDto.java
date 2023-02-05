@@ -9,9 +9,9 @@ import com.thumann.server.service.base.BaseService;
 
 public abstract class ApiSearchParamDto
 {
-    private int page  = 0;
+    private long page  = 0;
 
-    private int limit = 50;
+    private long limit = 50;
 
     public abstract String buildQuery( BaseService baseService );
 
@@ -19,16 +19,16 @@ public abstract class ApiSearchParamDto
 
     public void initParams( ObjectNode givenJson )
     {
-        this.page = JsonUtil.getInteger( givenJson, "page", 0 );
-        this.limit = JsonUtil.getInteger( givenJson, "limit", 50 );
+        this.page = JsonUtil.getLong( givenJson, "page", 0L );
+        this.limit = JsonUtil.getLong( givenJson, "limit", 50L );
     }
 
-    public int getPage()
+    public long getPage()
     {
         return page;
     }
 
-    public int getLimit()
+    public long getLimit()
     {
         return limit;
     }

@@ -23,11 +23,11 @@ public class EmployeeResponseDTO implements CreateJsonInterface
 
     private String       dateOfBirth;
 
-    private boolean      systemConfigurationPrivilege = true;
+    private boolean      systemConfigurationPrivilege   = false;
 
-    private boolean      articleModifyPrivilege       = true;
+    private boolean      logisticConfigurationPrivilege = false;
 
-    private List<String> tenants                      = new ArrayList<>();
+    private List<String> tenants                        = new ArrayList<>();
 
     public void initValues( Employee employee )
     {
@@ -36,7 +36,7 @@ public class EmployeeResponseDTO implements CreateJsonInterface
         setLastName( employee.getLastName() );
         setUserName( employee.getCredentials().getUsername() );
         setSystemConfigurationPrivilege( employee.getPrivilege().isSystemConfiguration() );
-        setArticleModifyPrivilege( employee.getPrivilege().isArticleModify() );
+        setLogisticConfigurationPrivilege( employee.getPrivilege().isLogisticConfiguration() );
 
         for ( Tenant tenant : employee.getTenants() ) {
             tenants.add( tenant.getNumber() );
@@ -53,7 +53,7 @@ public class EmployeeResponseDTO implements CreateJsonInterface
         objectNode.put( "userName", getUserName() );
         objectNode.put( "dateOfBirth", getDateOfBirth() );
         objectNode.put( "systemConfigurationPrivilege", isSystemConfigurationPrivilege() );
-        objectNode.put( "articleModifyPrivilege", isArticleModifyPrivilege() );
+        objectNode.put( "logisticConfigurationPrivilege", isLogisticConfigurationPrivilege() );
 
         JsonUtil.putStringArray( objectNode, "tenants", tenants );
 
@@ -120,14 +120,14 @@ public class EmployeeResponseDTO implements CreateJsonInterface
         this.systemConfigurationPrivilege = systemConfigurationPrivilege;
     }
 
-    public boolean isArticleModifyPrivilege()
+    public boolean isLogisticConfigurationPrivilege()
     {
-        return articleModifyPrivilege;
+        return logisticConfigurationPrivilege;
     }
 
-    public void setArticleModifyPrivilege( boolean articleModifyPrivilege )
+    public void setLogisticConfigurationPrivilege( boolean logisticConfigurationPrivilege )
     {
-        this.articleModifyPrivilege = articleModifyPrivilege;
+        this.logisticConfigurationPrivilege = logisticConfigurationPrivilege;
     }
 
 }

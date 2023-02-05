@@ -61,15 +61,15 @@ class EmployeeServiceImpl implements EmployeeService
         employee.setPrivilege( new UserPrivilege() );
         Boolean systemConfigurationPrivilege = createDTO.isSystemConfigurationPrivilege();
         if ( systemConfigurationPrivilege == null ) {
-            systemConfigurationPrivilege = true;
+            systemConfigurationPrivilege = false;
         }
         employee.getPrivilege().setSystemConfiguration( systemConfigurationPrivilege );
 
-        Boolean articleModifyPrivilege = createDTO.getArticleModifyPrivilege();
-        if ( articleModifyPrivilege == null ) {
-            articleModifyPrivilege = true;
+        Boolean logisticConfigurationPrivilege = createDTO.getLogisticConfigurationPrivilege();
+        if ( logisticConfigurationPrivilege == null ) {
+            logisticConfigurationPrivilege = false;
         }
-        employee.getPrivilege().setArticleModify( articleModifyPrivilege );
+        employee.getPrivilege().setLogisticConfiguration( logisticConfigurationPrivilege );
 
         return entityManager.merge( employee );
     }
@@ -106,8 +106,8 @@ class EmployeeServiceImpl implements EmployeeService
         if ( updateDto.isSystemConfigurationPrivilege() != null ) {
             employee.getPrivilege().setSystemConfiguration( updateDto.isSystemConfigurationPrivilege() );
         }
-        if ( updateDto.getArticleModifyPrivilege() != null ) {
-            employee.getPrivilege().setArticleModify( updateDto.getArticleModifyPrivilege() );
+        if ( updateDto.getLogisticConfigurationPrivilege() != null ) {
+            employee.getPrivilege().setLogisticConfiguration( updateDto.getLogisticConfigurationPrivilege() );
         }
 
         return entityManager.merge( employee );
@@ -159,6 +159,7 @@ class EmployeeServiceImpl implements EmployeeService
         dto.setFirstName( Employee.ADMIN );
         dto.setLastName( Employee.ADMIN );
         dto.setSystemConfigurationPrivilege( true );
+        dto.setLogisticConfigurationPrivilege( true );
 
         createEmployee( dto );
     }

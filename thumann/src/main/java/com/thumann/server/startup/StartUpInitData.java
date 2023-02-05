@@ -6,20 +6,25 @@ import org.springframework.stereotype.Component;
 
 import com.thumann.server.service.tenant.TenantService;
 import com.thumann.server.service.user.EmployeeService;
+import com.thumann.server.service.warehouse.WarehouseService;
 
 @Component
 public class StartUpInitData implements InitializingBean
 {
     @Autowired
-    private EmployeeService employeeService;
+    private EmployeeService  employeeService;
 
     @Autowired
-    private TenantService   tenantService;
+    private TenantService    tenantService;
+
+    @Autowired
+    private WarehouseService warehouseService;
 
     @Override
     public void afterPropertiesSet() throws Exception
     {
         tenantService.createMainTenant();
         employeeService.createAdmin();
+        warehouseService.createMainWarehouse();
     }
 }

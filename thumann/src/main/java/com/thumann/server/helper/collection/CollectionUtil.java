@@ -19,6 +19,11 @@ public class CollectionUtil
         return result;
     }
 
+    public static <T> List<T> safeSubList( List<T> list, long fromIndex, long toIndex )
+    {
+        return safeSubList( list, (int) fromIndex, (int) toIndex );
+    }
+
     public static <T> List<T> safeSubList( List<T> list, int fromIndex, int toIndex )
     {
         int size = list.size();

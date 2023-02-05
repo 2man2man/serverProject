@@ -21,7 +21,7 @@ public class EmployeeCreateUpdateDTO
 
     private Boolean     systemConfigurationPrivilege;
 
-    private Boolean     articleModifyPrivilege;
+    private Boolean     logisticConfigurationPrivilege;
 
     private Set<Tenant> tenants = new HashSet<>();
 
@@ -32,7 +32,7 @@ public class EmployeeCreateUpdateDTO
         setUserName( JsonUtil.getString( json, "userName" ) );
         setPassword( JsonUtil.getString( json, "password" ) );
         setSystemConfigurationPrivilege( JsonUtil.getBoolean( json, "systemConfigurationPrivilege", null ) );
-        setArticleModifyPrivilege( JsonUtil.getBoolean( json, "articleModifyPrivilege", null ) );
+        setLogisticConfigurationPrivilege( JsonUtil.getBoolean( json, "logisticConfigurationPrivilege", null ) );
 
         Set<String> tenantNumbers = new HashSet<String>( JsonUtil.getStringArray( json, "tenants" ) );
         for ( String tenantNumber : tenantNumbers ) {
@@ -99,14 +99,14 @@ public class EmployeeCreateUpdateDTO
         this.systemConfigurationPrivilege = systemConfigurationPrivilege;
     }
 
-    public Boolean getArticleModifyPrivilege()
+    public Boolean getLogisticConfigurationPrivilege()
     {
-        return articleModifyPrivilege;
+        return logisticConfigurationPrivilege;
     }
 
-    public void setArticleModifyPrivilege( Boolean articleModifyPrivilege )
+    public void setLogisticConfigurationPrivilege( Boolean logisticConfigurationPrivilege )
     {
-        this.articleModifyPrivilege = articleModifyPrivilege;
+        this.logisticConfigurationPrivilege = logisticConfigurationPrivilege;
     }
 
 }

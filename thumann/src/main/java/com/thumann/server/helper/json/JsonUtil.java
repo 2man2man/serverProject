@@ -71,7 +71,7 @@ public class JsonUtil
         return textNode.asBoolean();
     }
 
-    public static Integer getInteger( ObjectNode node, String property, Integer defaultValue )
+    public static Long getLong( ObjectNode node, String property, Long defaultValue )
     {
         if ( node == null ) {
             return defaultValue;
@@ -87,7 +87,7 @@ public class JsonUtil
             return null;
         }
         NumericNode textNode = (NumericNode) jsonNode;
-        return textNode.asInt();
+        return textNode.asLong();
     }
 
     public static List<String> getStringArray( ObjectNode node, String property )
@@ -113,6 +113,26 @@ public class JsonUtil
             }
             result.add( innerNode.asText() );
         }
+        return result;
+    }
+
+    public static ObjectNode getJson( ObjectNode node, String property )
+    {
+        ObjectNode result = null;
+        if ( node == null ) {
+            return result;
+        }
+        else if ( StringUtil.isEmpty( property ) ) {
+            return result;
+        }
+        else if ( !node.hasNonNull( property ) ) {
+            return result;
+        }
+        JsonNode jsonNode = node.get( property );
+        if ( !( jsonNode instanceof ObjectNode ) ) {
+            return null;
+        }
+        result = (ObjectNode) jsonNode;
         return result;
     }
 
