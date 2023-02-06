@@ -44,7 +44,7 @@ public class UserCredentials extends Domain implements Serializable
 
     public void setPassword( String password )
     {
-        if ( password.length() < 2 ) {
+        if ( password.length() < 1 ) {
             return;
         }
 
