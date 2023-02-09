@@ -23,4 +23,15 @@ public class StringUtil
         return sb.toString();
     }
 
+    public static boolean isLong( String string )
+    {
+        try {
+            Long.valueOf( string );
+            return true;
+        }
+        catch ( Exception e ) {
+            return false;
+        }
+    }
+
 }

@@ -33,6 +33,21 @@ public class JsonUtil
         return node;
     }
 
+    public static String get( ObjectNode node, String property )
+    {
+        if ( node == null ) {
+            return null;
+        }
+        else if ( StringUtil.isEmpty( property ) ) {
+            return null;
+        }
+        else if ( !node.hasNonNull( property ) ) {
+            return null;
+        }
+        JsonNode jsonNode = node.get( property );
+        return jsonNode.asText();
+    }
+
     public static String getString( ObjectNode node, String property )
     {
         if ( node == null ) {
