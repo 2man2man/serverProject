@@ -1,6 +1,7 @@
 package com.thumann.server.service.tenant;
 
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -148,6 +149,19 @@ public class TenantServiceImpl implements TenantService
         else {
             throw new IllegalStateException( "More than one tenant with number " + number );
         }
+    }
+
+    @Override
+    public Tenant getById( long tenantId, boolean onlyCallerTenants )
+    {
+        if ( onlyCallerTenants ) {
+            Set<Long> callerTenantIds = baseService.getCallerTenantIds();
+            if ( !callerTenantIds.contains( tenantId ) ) {
+                return null;
+            }
+        }
+
+        return entityManager.find( Tenant.class, tenantId );
     }
 
     @Override

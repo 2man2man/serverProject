@@ -14,4 +14,6 @@ public interface TenantService
 
     Tenant getByNumber( String number, boolean onlyCallerTenants );
 
+    Tenant getById( long tenantId, boolean onlyCallerTenants );
+
 }

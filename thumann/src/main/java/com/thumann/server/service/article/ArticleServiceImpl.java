@@ -15,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.thumann.server.domain.Domain;
 import com.thumann.server.domain.article.Article;
 import com.thumann.server.domain.tenant.Tenant;
-import com.thumann.server.dto.article.ArticleCreateDto;
 import com.thumann.server.helper.string.StringUtil;
 import com.thumann.server.service.base.BaseService;
 import com.thumann.server.service.helper.UserThreadHelper;
@@ -36,7 +35,7 @@ public class ArticleServiceImpl implements ArticleService
     }
 
     @Override
-    public Article createArticle( ArticleCreateDto createDTO )
+    public Article create( ArticleCreateDto createDTO )
     {
         if ( createDTO == null ) {
             throw new IllegalArgumentException( "createDTO must not be null" );
@@ -65,6 +64,33 @@ public class ArticleServiceImpl implements ArticleService
         article.setName( createDTO.getName() );
         article.setTenant( createDTO.getTenant() );
 
+        return entityManager.merge( article );
+    }
+
+    @Override
+    public Article update( ArticleUpdateDto updateDTO )
+    {
+        if ( updateDTO == null ) {
+            throw new IllegalArgumentException( "createDTO must not be null" );
+        }
+        else if ( updateDTO.getExistingArticleId() == Domain.UNKOWN_ID ) {
+            throw new IllegalArgumentException( "existingArticleId must be given" );
+        }
+
+        Article article = entityManager.find( Article.class, updateDTO.getExistingArticleId() );
+
+        String number = updateDTO.getNumber();
+        if ( !StringUtil.isEmpty( number ) ) {
+            Article existingArticle = find( number, article.getTenant() );
+            if ( existingArticle != null && existingArticle.getId() != article.getId() ) {
+                throw new IllegalArgumentException( "There already exists an article with number " + number + " for tenant "
+                    + article.getTenant().getNumber() );
+            }
+            article.setNumber( number );
+        }
+        if ( !StringUtil.isEmpty( updateDTO.getName() ) ) {
+            article.setName( updateDTO.getName() );
+        }
         return entityManager.merge( article );
     }
 
