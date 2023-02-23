@@ -31,7 +31,6 @@ public class Employee extends Person implements Serializable
     @OneToOne( fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true, optional = false )
     private UserPrivilege      privilege;
 
-    @Override
     public String getName()
     {
         List<String> names = new ArrayList<>();

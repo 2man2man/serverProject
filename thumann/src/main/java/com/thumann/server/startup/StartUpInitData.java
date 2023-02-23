@@ -24,7 +24,7 @@ public class StartUpInitData implements InitializingBean
     public void afterPropertiesSet() throws Exception
     {
         tenantService.createMainTenant();
-        employeeService.createAdmin();
         warehouseService.createMainWarehouse();
+        employeeService.createAdmin();
     }
 }

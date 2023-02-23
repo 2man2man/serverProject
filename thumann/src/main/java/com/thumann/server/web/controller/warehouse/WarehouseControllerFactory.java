@@ -34,4 +34,11 @@ public class WarehouseControllerFactory
         return dto;
     }
 
+    public WarehouseShortResponseDTO createShortResponseDTO( Warehouse domain )
+    {
+        WarehouseShortResponseDTO dto = new WarehouseShortResponseDTO();
+        dto.initValues( domain );
+        return dto;
+    }
+
 }

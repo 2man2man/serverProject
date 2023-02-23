@@ -1,11 +1,14 @@
 package com.thumann.server.service.fixedlocation;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -16,6 +19,7 @@ import com.thumann.server.domain.warehouse.area.WarehouseArea;
 import com.thumann.server.domain.warehouse.location.FixedLocation;
 import com.thumann.server.domain.warehouse.location.FixedLocationType;
 import com.thumann.server.helper.string.StringUtil;
+import com.thumann.server.service.base.BaseService;
 import com.thumann.server.web.controller.fixedlocation.type.FixedLocationTypeCreateDTO;
 import com.thumann.server.web.controller.fixedlocation.type.FixedLocationTypeUpdateDTO;
 
@@ -27,8 +31,23 @@ public class FixedLocationServiceImpl implements FixedLocationService
     @PersistenceContext
     private EntityManager entityManager;
 
+    @Autowired
+    private BaseService   baseService;
+
     public FixedLocationServiceImpl()
     {
+    }
+
+    @Override
+    public FixedLocation load( long id )
+    {
+        return load( id, new HashSet<>() );
+    }
+
+    @Override
+    public FixedLocation load( long id, Set<String> eager )
+    {
+        return baseService.getById( id, FixedLocation.class, eager );
     }
 
     @Override

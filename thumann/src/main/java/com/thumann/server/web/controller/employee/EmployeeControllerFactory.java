@@ -12,18 +12,22 @@ import com.thumann.server.domain.user.Employee;
 import com.thumann.server.helper.collection.CollectionUtil;
 import com.thumann.server.service.base.BaseService;
 import com.thumann.server.service.tenant.TenantService;
+import com.thumann.server.web.controller.warehouse.WarehouseControllerFactory;
 
 @Configuration
 @Scope( value = ConfigurableBeanFactory.SCOPE_SINGLETON )
 public class EmployeeControllerFactory
 {
     @Autowired
-    private BaseService baseService;
+    private BaseService                baseService;
+
+    @Autowired
+    private WarehouseControllerFactory warehouseFactory;
 
     public EmployeeCreateDTO createCreateDTO( ObjectNode node, TenantService tenantService )
     {
         EmployeeCreateDTO dto = new EmployeeCreateDTO();
-        dto.initValues( node, tenantService );
+        dto.initValues( node, baseService, tenantService );
         dto.checkRequiredFields();
         return dto;
     }
@@ -31,7 +35,7 @@ public class EmployeeControllerFactory
     public EmployeeUpdateDTO createUpdateDTO( ObjectNode node, TenantService tenantService, Employee employee )
     {
         EmployeeUpdateDTO dto = new EmployeeUpdateDTO();
-        dto.initValues( node, tenantService, employee );
+        dto.initValues( node, baseService, tenantService, employee );
         dto.checkRequiredFields();
         return dto;
     }
@@ -41,7 +45,7 @@ public class EmployeeControllerFactory
         Employee employee = baseService.getById( employeeId, Employee.class, getEagerProps() );
 
         EmployeeResponseDTO dto = new EmployeeResponseDTO();
-        dto.initValues( employee );
+        dto.initValues( employee, warehouseFactory );
         return dto;
     }
 

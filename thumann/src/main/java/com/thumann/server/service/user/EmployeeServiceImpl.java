@@ -17,6 +17,7 @@ import com.thumann.server.domain.tenant.Tenant;
 import com.thumann.server.domain.user.Employee;
 import com.thumann.server.domain.user.UserCredentials;
 import com.thumann.server.domain.user.UserPrivilege;
+import com.thumann.server.domain.warehouse.Warehouse;
 import com.thumann.server.helper.collection.CollectionUtil;
 import com.thumann.server.helper.string.StringUtil;
 import com.thumann.server.service.helper.UserThreadHelper;
@@ -45,6 +46,9 @@ class EmployeeServiceImpl implements EmployeeService
         if ( createDTO.getTenants().isEmpty() ) {
             throw new IllegalArgumentException( "tenants must not be empty" );
         }
+        if ( createDTO.getWarehouse() == null ) {
+            throw new IllegalArgumentException( "warehouse must not be provided" );
+        }
         String tenantError = checkTenants( createDTO );
         if ( !StringUtil.isEmpty( tenantError ) ) {
             throw new IllegalArgumentException( tenantError );
@@ -54,6 +58,7 @@ class EmployeeServiceImpl implements EmployeeService
         employee.setFirstName( createDTO.getFirstName() );
         employee.setLastName( createDTO.getLastName() );
         employee.getTenants().addAll( createDTO.getTenants() );
+        employee.setWarehouse( createDTO.getWarehouse() );
 
         UserCredentials credentials = userCredentialsService.create( createDTO.getUserName(), createDTO.getPassword() );
         employee.setCredentials( credentials );
@@ -93,6 +98,11 @@ class EmployeeServiceImpl implements EmployeeService
         if ( !updateDto.getTenants().isEmpty() ) {
             employee.setTenants( new HashSet<>( updateDto.getTenants() ) );
         }
+
+        if ( updateDto.getWarehouse() != null ) {
+            employee.setWarehouse( updateDto.getWarehouse() );
+        }
+
         if ( !StringUtil.isEmpty( updateDto.getUserName() ) ) {
             Employee existingEmployeeByUsername = getByUsername( updateDto.getUserName() );
             if ( existingEmployeeByUsername != null && existingEmployeeByUsername.getId() != employee.getId() ) {
@@ -152,7 +162,15 @@ class EmployeeServiceImpl implements EmployeeService
 
         List<Tenant> tenants = entityManager.createQuery( sb.toString(), Tenant.class ).getResultList();
 
+        sb = new StringBuilder();
+        sb.append( "SELECT domain " )
+          .append( " FROM Warehouse domain " )
+          .append( " ORDER BY domain.id asc " );
+
+        Warehouse warehouse = entityManager.createQuery( sb.toString(), Warehouse.class ).getResultList().get( 0 );
+
         EmployeeCreateDTO dto = new EmployeeCreateDTO();
+        dto.setWarehouse( warehouse );
         dto.setUserName( Employee.ADMIN );
         dto.setPassword( Employee.ADMIN );
         dto.getTenants().addAll( tenants );
@@ -167,6 +185,11 @@ class EmployeeServiceImpl implements EmployeeService
     @Override
     public String checkTenants( EmployeeCreateUpdateDTO dto )
     {
+        if ( !StringUtil.isDifferent( dto.getUserName(), Employee.ADMIN ) ) {
+            System.out.println( "CHECK: " + dto.getUserName() );
+            return null;
+        }
+
         if ( dto instanceof EmployeeUpdateDTO ) {
             EmployeeUpdateDTO updateDto = (EmployeeUpdateDTO) dto;
             if ( updateDto.isTenantCreation() ) {

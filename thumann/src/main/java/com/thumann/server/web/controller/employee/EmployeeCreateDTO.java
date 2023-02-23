@@ -22,5 +22,8 @@ public class EmployeeCreateDTO extends EmployeeCreateUpdateDTO
         else if ( getTenants().isEmpty() ) {
             throw APIMissingFieldException.create( "tenants" );
         }
+        else if ( getWarehouse() == null ) {
+            throw APIMissingFieldException.create( "warehouse" );
+        }
     }
 }

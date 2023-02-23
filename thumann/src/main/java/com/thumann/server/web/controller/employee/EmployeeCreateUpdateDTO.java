@@ -4,8 +4,11 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.thumann.server.domain.Domain;
 import com.thumann.server.domain.tenant.Tenant;
+import com.thumann.server.domain.warehouse.Warehouse;
 import com.thumann.server.helper.json.JsonUtil;
+import com.thumann.server.service.base.BaseService;
 import com.thumann.server.service.tenant.TenantService;
 import com.thumann.server.web.exception.APIEntityNotFoundException;
 
@@ -25,7 +28,9 @@ public class EmployeeCreateUpdateDTO
 
     private Set<Tenant> tenants = new HashSet<>();
 
-    public void initValues( ObjectNode json, TenantService tenantService )
+    private Warehouse   warehouse;
+
+    public void initValues( ObjectNode json, BaseService baseService, TenantService tenantService )
     {
         setFirstName( JsonUtil.getString( json, "firstName" ) );
         setLastName( JsonUtil.getString( json, "lastName" ) );
@@ -42,6 +47,16 @@ public class EmployeeCreateUpdateDTO
             }
             tenants.add( tenant );
         }
+
+        long warehouseId = JsonUtil.getLong( json, "warehouseId", Domain.UNKOWN_ID );
+        if ( warehouseId != Domain.UNKOWN_ID ) {
+            Warehouse wh = baseService.getById( warehouseId, Warehouse.class );
+            if ( wh == null ) {
+                throw APIEntityNotFoundException.create( Warehouse.class, "id", warehouseId );
+            }
+            this.warehouse = wh;
+        }
+
     }
 
     public String getFirstName()
@@ -107,6 +122,16 @@ public class EmployeeCreateUpdateDTO
     public void setLogisticConfigurationPrivilege( Boolean logisticConfigurationPrivilege )
     {
         this.logisticConfigurationPrivilege = logisticConfigurationPrivilege;
+    }
+
+    public Warehouse getWarehouse()
+    {
+        return warehouse;
+    }
+
+    public void setWarehouse( Warehouse warehouse )
+    {
+        this.warehouse = warehouse;
     }
 
 }

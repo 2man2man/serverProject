@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.thumann.server.domain.Domain;
+import com.thumann.server.domain.DomainTenantInterface;
 import com.thumann.server.domain.user.Employee;
 import com.thumann.server.domain.user.Person;
 import com.thumann.server.helper.collection.CollectionUtil;
@@ -106,9 +107,40 @@ public class BaseServiceImpl implements BaseService
     public Set<Long> getCallerTenantIds()
     {
         Set<Long> result = new HashSet<>();
-        Person caller = getMananger().find( Employee.class, UserThreadHelper.getUser() );
+        Person caller = getCaller();
         result.addAll( CollectionUtil.getIdsAsList( caller.getTenants() ) );
         return result;
+    }
+
+    @Override
+    public Person getCaller()
+    {
+        return getMananger().find( Employee.class, UserThreadHelper.getUser() );
+    }
+
+    @Override
+    public void checkTenantAndThrow( DomainTenantInterface domain )
+    {
+        if ( checkTenant( domain ) ) {
+            return;
+        }
+        Person caller = getCaller();
+        StringBuilder sb = new StringBuilder();
+        sb.append( "Tenant not allowed. " );
+        sb.append( "Caller: " ).append( caller.getName() ).append( ", Caller-Id: " ).append( caller.getId() ).append( " " );
+        sb.append( "Domain-Id: " ).append( domain.getId() ).append( ", " );
+        sb.append( "Tenant-Id: " ).append( domain.getTenant().getId() ).append( " " );
+        throw new IllegalArgumentException( sb.toString() );
+    }
+
+    @Override
+    public boolean checkTenant( DomainTenantInterface domain )
+    {
+        long tenantId = domain.getTenant().getId();
+        if ( getCallerTenantIds().contains( tenantId ) ) {
+            return true;
+        }
+        return false;
     }
 
 }

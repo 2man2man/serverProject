@@ -1,5 +1,7 @@
 package com.thumann.server.service.fixedlocation;
 
+import java.util.Set;
+
 import com.thumann.server.domain.warehouse.location.FixedLocation;
 import com.thumann.server.domain.warehouse.location.FixedLocationType;
 import com.thumann.server.web.controller.fixedlocation.type.FixedLocationTypeCreateDTO;
@@ -24,5 +26,9 @@ public interface FixedLocationService
     void deleteOrArchive( FixedLocation fixedLocation );
 
     FixedLocation unArchive( FixedLocation fixedLocation );
+
+    FixedLocation load( long id );
+
+    FixedLocation load( long id, Set<String> eager );
 
 }

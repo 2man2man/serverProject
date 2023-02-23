@@ -3,6 +3,7 @@ package com.thumann.server.web.controller.employee;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.thumann.server.domain.Domain;
 import com.thumann.server.domain.user.Employee;
+import com.thumann.server.service.base.BaseService;
 import com.thumann.server.service.tenant.TenantService;
 import com.thumann.server.web.exception.APIMissingFieldException;
 
@@ -13,14 +14,14 @@ public class EmployeeUpdateDTO extends EmployeeCreateUpdateDTO
     private boolean isTenantCreation = false;
 
     @Override
-    public void initValues( ObjectNode json, TenantService tenantService )
+    public void initValues( ObjectNode json, BaseService baseService, TenantService tenantService )
     {
         throw new IllegalAccessError( "Call initValues with existingEmployee" );
     }
 
-    public void initValues( ObjectNode json, TenantService tenantService, Employee existingEmployee )
+    public void initValues( ObjectNode json, BaseService baseService, TenantService tenantService, Employee existingEmployee )
     {
-        super.initValues( json, tenantService );
+        super.initValues( json, baseService, tenantService );
         this.setEmployeeId( existingEmployee.getId() );
 
     }

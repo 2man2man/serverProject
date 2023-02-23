@@ -55,4 +55,11 @@ public class ArticleControllerFactory
         return dto;
     }
 
+    public ArticleShortResponseDTO createShortResponseDTO( Article article )
+    {
+        ArticleShortResponseDTO dto = new ArticleShortResponseDTO();
+        dto.initValues( article );
+        return dto;
+    }
+
 }

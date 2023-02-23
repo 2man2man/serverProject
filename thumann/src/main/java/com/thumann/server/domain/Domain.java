@@ -1,17 +1,21 @@
 package com.thumann.server.domain;
 
+import java.io.Serializable;
+
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 
 @MappedSuperclass
-public abstract class Domain
+public abstract class Domain implements Serializable
 {
-    public static final long UNKOWN_ID = 0;
+    private static final long serialVersionUID = -8635160726177505425L;
+
+    public static final long  UNKOWN_ID        = 0;
 
     @Id
     @GeneratedValue
-    private Long             id;
+    private Long              id;
 
     public Long getId()
     {

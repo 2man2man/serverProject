@@ -7,6 +7,8 @@ import java.util.Set;
 import javax.persistence.EntityManager;
 
 import com.thumann.server.domain.Domain;
+import com.thumann.server.domain.DomainTenantInterface;
+import com.thumann.server.domain.user.Person;
 
 public interface BaseService
 {
@@ -27,5 +29,11 @@ public interface BaseService
     <T> List<T> getObjectsByQuery( String query, Class<T> resultClazz );
 
     Set<Long> getCallerTenantIds();
+
+    boolean checkTenant( DomainTenantInterface domain );
+
+    void checkTenantAndThrow( DomainTenantInterface domain );
+
+    Person getCaller();
 
 }

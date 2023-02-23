@@ -9,27 +9,32 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.thumann.server.domain.tenant.Tenant;
 import com.thumann.server.domain.user.Employee;
 import com.thumann.server.helper.json.JsonUtil;
+import com.thumann.server.web.controller.warehouse.WarehouseControllerFactory;
+import com.thumann.server.web.controller.warehouse.WarehouseShortResponseDTO;
+import com.thumann.server.web.response.APIResponseBuilderHelper;
 import com.thumann.server.web.response.CreateJsonInterface;
 
-public class EmployeeResponseDTO implements CreateJsonInterface
+public class EmployeeResponseDTO extends APIResponseBuilderHelper implements CreateJsonInterface
 {
-    private long         id;
+    private long                      id;
 
-    private String       firstName;
+    private String                    firstName;
 
-    private String       lastName;
+    private String                    lastName;
 
-    private String       userName;
+    private String                    userName;
 
-    private String       dateOfBirth;
+    private String                    dateOfBirth;
 
-    private boolean      systemConfigurationPrivilege   = false;
+    private boolean                   systemConfigurationPrivilege   = false;
 
-    private boolean      logisticConfigurationPrivilege = false;
+    private boolean                   logisticConfigurationPrivilege = false;
 
-    private List<String> tenants                        = new ArrayList<>();
+    private List<String>              tenants                        = new ArrayList<>();
 
-    public void initValues( Employee employee )
+    private WarehouseShortResponseDTO warehouse;
+
+    public void initValues( Employee employee, WarehouseControllerFactory warehouseFactory )
     {
         setId( employee.getId() );
         setFirstName( employee.getFirstName() );
@@ -41,6 +46,7 @@ public class EmployeeResponseDTO implements CreateJsonInterface
         for ( Tenant tenant : employee.getTenants() ) {
             tenants.add( tenant.getNumber() );
         }
+        this.warehouse = warehouseFactory.createShortResponseDTO( employee.getWarehouse() );
     }
 
     @Override
@@ -54,6 +60,8 @@ public class EmployeeResponseDTO implements CreateJsonInterface
         objectNode.put( "dateOfBirth", getDateOfBirth() );
         objectNode.put( "systemConfigurationPrivilege", isSystemConfigurationPrivilege() );
         objectNode.put( "logisticConfigurationPrivilege", isLogisticConfigurationPrivilege() );
+
+        addValue( objectNode, "warehouse", this.warehouse );
 
         JsonUtil.putStringArray( objectNode, "tenants", tenants );
 

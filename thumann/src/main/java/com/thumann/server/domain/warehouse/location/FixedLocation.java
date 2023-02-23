@@ -17,32 +17,34 @@ import com.thumann.server.helper.string.StringUtil;
 @Entity
 public class FixedLocation extends Domain implements Serializable
 {
-    private static final long serialVersionUID = 80179892317930879L;
+    private static final long  serialVersionUID = 80179892317930879L;
+
+    public static final String BARCODE_PREFIX   = "FixedLocation_";
 
     @Column( columnDefinition = "BOOLEAN DEFAULT FALSE" )
-    private boolean           archived         = false;
+    private boolean            archived         = false;
 
     @ManyToOne( fetch = FetchType.LAZY, optional = false )
-    private Warehouse         warehouse;
+    private Warehouse          warehouse;
 
     @ManyToOne( fetch = FetchType.LAZY )
-    private WarehouseArea     warehouseArea;
+    private WarehouseArea      warehouseArea;
 
     @ManyToOne( fetch = FetchType.LAZY )
-    private FixedLocationType locationType;
+    private FixedLocationType  locationType;
 
-    private String            barcode;
+    private String             barcode;
 
     @Column( nullable = false, unique = true )
-    private String            number;
+    private String             number;
 
-    private String            rrow;
+    private String             rrow;
 
-    private String            ccolumn;
+    private String             ccolumn;
 
-    private String            level;
+    private String             level;
 
-    private String            fragment;
+    private String             fragment;
 
     public void initNumberAndBarcode()
     {

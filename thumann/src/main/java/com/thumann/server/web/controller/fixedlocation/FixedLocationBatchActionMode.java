@@ -4,5 +4,6 @@ public enum FixedLocationBatchActionMode {
     CREATE_AND_UPDATE,
     CREATE,
     UPDATE,
-    DELETE;
+    DELETE,
+    PRINT,
 }

@@ -5,6 +5,7 @@ import java.math.BigInteger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.ResponseEntity.BodyBuilder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,6 +23,8 @@ import com.thumann.server.web.controller.fixedlocation.helper.FixedLocationBatch
 import com.thumann.server.web.exception.APIBadRequestException;
 import com.thumann.server.web.exception.APIMissingAuthorizationException;
 import com.thumann.server.web.helper.search.ApiSearchHelper;
+import com.thumann.server.web.response.CreateJsonInterface;
+import com.thumann.server.web.response.ReponseFactory;
 
 @RestController
 @RequestMapping( value = "/fixedLocation", consumes = "application/json", produces = "application/json" )
@@ -30,8 +33,8 @@ public class FixedLocationController
     @Autowired
     private BaseService                    baseService;
 
-//    @Autowired
-//    private ReponseFactory                 responseFactory;
+    @Autowired
+    private ReponseFactory                 responseFactory;
 
     @Autowired
     private FixedLocationService           fixedLocationService;
@@ -47,12 +50,21 @@ public class FixedLocationController
         FixedLocationBatchActionDTO batchActionDto = factory.createBatchActionDTO( json );
         FixedLocationBatchActionAbstractHelper helper = FixedLocationBatchActionAbstractHelper.create( batchActionDto, fixedLocationService );
         if ( helper.getTotalCount().compareTo( BigInteger.valueOf( 10000 ) ) > 0 ) {
-            throw APIBadRequestException.create( "A maximum of 1000000 locations can be created at one time" );
+            throw APIBadRequestException.create( "A maximum of 1000000 locations can be handled at one time" );
         }
 
         helper.execute();
 
-        return ResponseEntity.status( HttpStatus.CREATED ).build();
+        CreateJsonInterface result = helper.getResponse();
+        BodyBuilder response = ResponseEntity.status( HttpStatus.OK );
+
+        if ( result != null ) {
+            return response.body( responseFactory.createResponse( result ) );
+        }
+        else {
+            return response.build();
+        }
+
     }
 
     @PostMapping( value = "/search" )

@@ -8,6 +8,8 @@ import com.thumann.server.helper.string.StringUtil;
 import com.thumann.server.service.fixedlocation.FixedLocationService;
 import com.thumann.server.web.controller.fixedlocation.FixedLocationBatchActionDTO;
 import com.thumann.server.web.controller.fixedlocation.FixedLocationBatchActionMode;
+import com.thumann.server.web.controller.fixedlocation.helper.print.FixedLocationBatchActionPrintHelper;
+import com.thumann.server.web.response.CreateJsonInterface;
 
 public abstract class FixedLocationBatchActionAbstractHelper
 {
@@ -25,6 +27,9 @@ public abstract class FixedLocationBatchActionAbstractHelper
         }
         else if ( mode == FixedLocationBatchActionMode.DELETE ) {
             return new FixedLocationBatchActionDeleteHelper( dto, service );
+        }
+        else if ( mode == FixedLocationBatchActionMode.PRINT ) {
+            return new FixedLocationBatchActionPrintHelper( dto, service );
         }
         throw new IllegalArgumentException( "Mode [" + mode + "] is not implemented!" );
     }
@@ -48,6 +53,11 @@ public abstract class FixedLocationBatchActionAbstractHelper
     }
 
     public abstract void execute();
+
+    public CreateJsonInterface getResponse()
+    {
+        return null;
+    }
 
     protected void initRanges()
     {
