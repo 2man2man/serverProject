@@ -5,6 +5,8 @@ import java.util.List;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.thumann.server.helper.json.JsonUtil;
+import com.thumann.server.helper.string.StringUtil;
 import com.thumann.server.service.base.BaseService;
 import com.thumann.server.web.helper.search.ApiSearchParamDto;
 
@@ -14,6 +16,8 @@ public class FixedLocationSearchParams extends ApiSearchParamDto
 
     // TODO: pass this as parameter
     private boolean                        showArchived = false;
+
+    private String                         barcode;
 
     public FixedLocationSearchParams( FixedLocationControllerFactory dtofactory )
     {
@@ -31,6 +35,9 @@ public class FixedLocationSearchParams extends ApiSearchParamDto
         if ( !showArchived ) {
             sb.append( " AND domain.archived IS FALSE" );
         }
+        if ( !StringUtil.isEmpty( barcode ) ) {
+            sb.append( " AND domain.barcode = '" ).append( barcode ).append( "' " );
+        }
 
         sb.append( " ORDER BY " )
           .append( " length(domain.rrow) asc,  domain.rrow  asc, " )
@@ -45,7 +52,10 @@ public class FixedLocationSearchParams extends ApiSearchParamDto
     public void initParams( ObjectNode givenJson )
     {
         super.initParams( givenJson );
-//        ObjectNode filter = JsonUtil.getJson( givenJson, "filters" );
+        ObjectNode filter = JsonUtil.getJson( givenJson, "filters" );
+        if ( filter != null ) {
+            this.barcode = JsonUtil.getString( filter, "barcode" );
+        }
     }
 
     @Override

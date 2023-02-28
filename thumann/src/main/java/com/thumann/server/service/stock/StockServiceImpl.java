@@ -61,6 +61,7 @@ public class StockServiceImpl implements StockService
         stock = entityManager.merge( stock );
 
         StockFixedLocationCreateAction createAction = new StockFixedLocationCreateAction();
+        createAction.initCreator( (Employee) caller );
         createAction.setArticle( managedArticle );
         createAction.setFixedLocation( managedLocation );
         createAction.setLogisticExecutionType( LogisticExecutionType.STORAGE );

@@ -33,6 +33,7 @@ public class FixedLocation extends Domain implements Serializable
     @ManyToOne( fetch = FetchType.LAZY )
     private FixedLocationType  locationType;
 
+    @Column( nullable = false, unique = true )
     private String             barcode;
 
     @Column( nullable = false, unique = true )

@@ -161,7 +161,6 @@ public class FixedLocationServiceImpl implements FixedLocationService
         else {
             throw new IllegalStateException( "Multiple location for " + row + "-" + column + "-" + level + "-" + fragment + " found!" );
         }
-
     }
 
     @Override
